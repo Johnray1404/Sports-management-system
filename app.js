@@ -25,7 +25,14 @@ app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Set up session store
-const sessionStore = new MySQLStore({}, db);
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+});
+
 
 app.use(session({
     secret: 'your-secret-key',
@@ -177,4 +184,5 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
+
 });
