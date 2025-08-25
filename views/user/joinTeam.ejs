@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Team</title>
+    <link rel="stylesheet" href="/styles/frontpage.css">
+    <link rel="stylesheet" href="/styles/userHomepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .page-header h1 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* List View Styles */
+        .organizations-list {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .organization-item {
+            display: flex;
+            border-bottom: 1px solid var(--medium-gray);
+            transition: var(--transition);
+            padding: 1.25rem;
+            align-items: center;
+        }
+
+        .organization-item:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .organization-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+            background: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .organization-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .organization-logo i {
+            font-size: 24px;
+            color: var(--dark-gray);
+        }
+
+        .organization-content {
+            flex-grow: 1;
+            min-width: 0; /* Allows text truncation */
+        }
+
+        .organization-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .organization-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+        }
+
+        .meta-item i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        .organization-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .detail-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+        }
+
+        .organization-actions {
+            margin-left: auto;
+            flex-shrink: 0;
+            width: 180px;
+            text-align: right;
+        }
+
+        .register-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .register-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-btn:disabled {
+            background-color: var(--dark-gray) !important;
+            cursor: not-allowed !important;
+            opacity: 0.8;
+        }
+
+        .register-btn:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Status-specific colors */
+        .btn-success {
+            background-color: var(--success-color) !important;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color) !important;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        .btn-info {
+            background-color: var(--dark-gray) !important;
+        }
+
+        .no-organizations {
+            text-align: center;
+            padding: 3rem;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .no-organizations i {
+            font-size: 3rem;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+
+        .no-organizations h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .no-organizations p {
+            color: var(--dark-gray);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .organization-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            
+            .organization-logo {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .organization-actions {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            .organization-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <div id="mySidebar" class="sidebar">
+        <a href="/homepage"><i class="fas fa-home"></i> Home</a>
+        <a href="/posts"><i class="fas fa-newspaper"></i> Posts</a>
+        <a href="/gallery"><i class="fas fa-image"></i> Gallery</a>
+        <a href="/events"><i class="fas fa-calendar-alt"></i> Events</a>
+        <!-- Team link with sub-sidebar -->
+        <a href="javascript:void(0);" class="team-link" onclick="toggleSubSidebar()"><i class="fas fa-users-cog"></i> Teams</a>
+        <div class="sub-sidebar" id="subSidebar">
+            <a href="/my-team"><i class="fas fa-user"></i> My Team</a>
+            <a href="/join-team" class="active"><i class="fas fa-user-plus"></i> Join Team</a>
+            <a href="/all-teams"><i class="fas fa-users"></i> All Teams</a>
+        </div>
+    </div>
+
+    <!-- Sidebar toggle button -->
+    <span class="sidebar-btn" onclick="toggleNav()">&#9776;</span>
+
+    <header class="header">
+        <div class="logo">
+            <a href="/homepage" style="text-decoration: none;">
+                <img src="/images/cityYouth.jpg" alt="SLAMS Logo">
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <% if (user.profile) { %>
+                <img src="<%= user.profile %>" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff;">
+            <% } else { %>
+                <i class="fas fa-user-shield" style="font-size: 24px;"></i>
+            <% } %>
+            <div class="dropdown-content">
+                <a href="/profile">
+                    <i class="fas fa-cogs" style="margin-right: 8px;"></i> Profile
+                </a>
+                <a href="javascript:void(0);" class="logout-btn" onclick="showLogoutModal()">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Log Out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="page-header">
+            <h1><i class="fas fa-landmark"></i> Join a Team</h1>
+        </div>
+
+        <% if (organizations.length > 0) { %>
+            <div class="organizations-list">
+                <% organizations.forEach(org => { %>
+                    <div class="organization-item">
+                        <div class="organization-logo">
+                            <% if (org.teamProfile) { %>
+                                <img src="/uploads/team_profiles/<%= org.teamProfile %>" alt="<%= org.organizationName %>">
+                            <% } else { %>
+                                <i class="fas fa-landmark"></i>
+                            <% } %>
+                        </div>
+                        
+                        <div class="organization-content">
+                            <h3 class="organization-name">
+                                <%= org.organizationName %>
+                            </h3>
+                            
+                            <div class="organization-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-calendar-alt"></i> <%= org.created_at %>
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-users"></i> <%= org.organization %>
+                                </span>
+                            </div>
+                            
+                            <div class="organization-details">
+                                <% if (org.eventTitle) { %>
+                                    <div class="detail-group">
+                                        <span class="detail-label">Event:</span>
+                                        <span class="detail-value"><%= org.eventTitle %></span>
+                                    </div>
+                                <% } %>
+                                
+                                <% if (org.coordinatorName) { %>
+                                    <div class="detail-group">
+                                        <span class="detail-label">Coordinator:</span>
+                                        <span class="detail-value"><%= org.coordinatorName %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <div class="organization-actions">
+                            <% if (org.userTeamStatus) { %>
+                                <% if (org.userTeamStatus === 'confirmed') { %>
+                                    <button class="register-btn btn-success" disabled>
+                                        <i class="fas fa-check-circle"></i> Member
+                                    </button>
+                                <% } else if (org.userTeamStatus === 'pending') { %>
+                                    <button class="register-btn btn-warning" disabled>
+                                        <i class="fas fa-clock"></i> Pending
+                                    </button>
+                                <% } else { %>
+                                    <button class="register-btn btn-danger" disabled>
+                                        <i class="fas fa-times-circle"></i> Rejected
+                                    </button>
+                                <% } %>
+                            <% } else if (org.userEventStatus) { %>
+                                <% if (org.userEventStatus === 'confirmed') { %>
+                                    <button class="register-btn btn-success" disabled>
+                                        <i class="fas fa-check-circle"></i> In Event
+                                    </button>
+                                <% } else if (org.userEventStatus === 'pending') { %>
+                                    <button class="register-btn btn-warning" disabled>
+                                        <i class="fas fa-clock"></i> Pending
+                                    </button>
+                                <% } else { %>
+                                    <button class="register-btn btn-danger" disabled>
+                                        <i class="fas fa-times-circle"></i> Rejected
+                                    </button>
+                                <% } %>
+                            <% } else { %>
+                                <a href="/player-register?team_id=<%= org.id %>" class="register-btn">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="no-organizations">
+                <i class="fas fa-landmark"></i>
+                <h3>No Confirmed Organizations Found</h3>
+                <p>There are currently no confirmed organizations in the system.</p>
+            </div>
+        <% } %>
+    </main>
+
+    <!-- Modal for logout confirmation -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Are you sure you want to log out?</h3>
+            <button id="confirmLogout" class="confirm-btn">Yes</button>
+            <button id="cancelLogout" class="cancel-btn">No</button>
+        </div>
+    </div>
+
+    <script>
+        // [Keep all your existing JavaScript code]
+        // The JavaScript remains exactly the same as in your original file
+        let isSidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
+
+        function setSidebarState(open) {
+            localStorage.setItem('sidebarOpen', open);
+        }
+
+        function toggleNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const content = document.querySelector(".dashboard-container");
+            const sidebarBtn = document.querySelector(".sidebar-btn");
+
+            if (isSidebarOpen) {
+                sidebar.style.left = "-240px";
+                content.style.marginLeft = "0";
+                sidebarBtn.innerHTML = "&#9776;";
+                isSidebarOpen = false;
+            } else {
+                sidebar.style.left = "0";
+                content.style.marginLeft = "240px";
+                sidebarBtn.innerHTML = "&#9776;";
+                isSidebarOpen = true;
+            }
+
+            setSidebarState(isSidebarOpen);
+        }
+
+        function applySidebarState() {
+            const sidebar = document.getElementById("mySidebar");
+            const content = document.querySelector(".dashboard-container");
+            const sidebarBtn = document.querySelector(".sidebar-btn");
+
+            if (isSidebarOpen) {
+                sidebar.style.left = "0";
+                content.style.marginLeft = "240px";
+                sidebarBtn.innerHTML = "&#9776;";
+            } else {
+                sidebar.style.left = "-240px";
+                content.style.marginLeft = "0";
+                sidebarBtn.innerHTML = "&#9776;";
+            }
+        }
+
+        function toggleSubSidebar() {
+            const subSidebar = document.getElementById("subSidebar");
+            const teamLink = document.querySelector(".team-link");
+
+            if (subSidebar.style.display === "block") {
+                subSidebar.style.display = "none";
+                teamLink.classList.remove("active");
+                localStorage.setItem('subSidebarOpen', 'false');
+            } else {
+                subSidebar.style.display = "block";
+                teamLink.classList.add("active");
+                localStorage.setItem('subSidebarOpen', 'true');
+            }
+        }
+
+        function applySubSidebarState() {
+            const subSidebar = document.getElementById("subSidebar");
+            const teamLink = document.querySelector(".team-link");
+            const isSubSidebarOpen = localStorage.getItem('subSidebarOpen') === 'true';
+
+            if (isSubSidebarOpen) {
+                subSidebar.style.display = "block";
+                teamLink.classList.add("active");
+            } else {
+                subSidebar.style.display = "none";
+                teamLink.classList.remove("active");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            applySidebarState();
+            applySubSidebarState();
+        });
+
+        // Show the logout confirmation modal
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        document.getElementById('confirmLogout').addEventListener('click', function() {
+            window.location.href = '/logout';  
+        });
+
+        document.getElementById('cancelLogout').addEventListener('click', function() {
+            hideLogoutModal(); 
+        });
+
+        const userProfile = document.querySelector('.user-profile');
+        const dropdown = document.querySelector('.dropdown-content');
+        let hideTimeout;
+
+        userProfile.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+            dropdown.classList.add('show');
+        });
+
+        userProfile.addEventListener('mouseleave', () => {
+            hideTimeout = setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 1500); 
+        });
+    </script>
+</body>
+</html>

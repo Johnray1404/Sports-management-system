@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= event.title %> - SLAMS</title>
+    <link rel="stylesheet" href="/styles/frontpage.css">
+    <link rel="stylesheet" href="/styles/userHomepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A154B;
+            --secondary-color: #FFFFFF;
+            --accent-color: #9C4D9A;
+            --text-color: #333333;
+            --light-gray: #F5F5F5;
+            --border-color: #E0E0E0;
+        }
+
+        .event-details-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .event-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .event-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .status-upcoming {
+            background-color: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .status-ongoing {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-completed {
+            background-color: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .event-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .event-image-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: auto;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            background-color: #FFFFFF;
+            display: inline-block;
+        }
+
+        .event-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .event-image:hover {
+            transform: scale(1.02);
+        }
+
+        .event-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .info-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        .sports-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .sport-tag {
+            background-color: var(--light-gray);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .sport-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background-color: #e6d5e7;
+        }
+
+        .sport-tag i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Sport-specific icons and colors */
+        .sport-basketball {
+            color: #FF6B00;
+        }
+        
+        .sport-volleyball {
+            color: #1E88E5;
+        }
+        
+        .sport-soccer {
+            color: #43A047;
+        }
+        
+        .sport-badminton {
+            color: #8E24AA;
+        }
+        
+        .sport-tabletennis {
+            color: #E53935;
+        }
+        
+        .sport-chess {
+            color: #5D4037;
+        }
+
+        .pdf-container {
+            margin-top: 15px;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            color: #D32F2F;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-link:hover {
+            background-color: #FFEBEE;
+            transform: translateY(-2px);
+        }
+
+        .pdf-link i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-back {
+            background-color: #f0f2f5; 
+            color: #4A154B;            
+            border: 1px solid #d1d5db; 
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background-color: #e5e7eb;  /* Slightly darker on hover */
+            color: #3a0d3a;            /* Darker shade of primary */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-color: #9ca3af;
+        }
+
+        .btn-back:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .btn-back i {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-back:hover i {
+            transform: translateX(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .event-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .btn-join-team {
+            background-color: #4A154B; /* Matching your primary color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-join-team:hover {
+            background-color: #3a0d3a; /* Darker shade for hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-join-team:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn-join-team::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .btn-join-team:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn-join-team i {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-join-team:hover i {
+            transform: scale(1.1);
+        }
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-join-team, .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <div id="mySidebar" class="sidebar">
+        <a href="/homepage"><i class="fas fa-home"></i> Home</a>
+        <a href="/posts"><i class="fas fa-newspaper"></i> Posts</a>
+        <a href="/gallery"><i class="fas fa-image"></i> Gallery</a>
+        <a href="/events" class="active"><i class="fas fa-calendar-alt"></i> Events</a>
+        <a href="javascript:void(0);" class="team-link" onclick="toggleSubSidebar()"><i class="fas fa-users-cog"></i> Teams</a>
+        <div class="sub-sidebar" id="subSidebar">
+            <a href="/my-team"><i class="fas fa-user"></i> My Team</a>
+            <a href="/join-team"><i class="fas fa-user-plus"></i> Join Team</a>
+            <a href="/all-teams"><i class="fas fa-users"></i> All Teams</a>
+
+        </div>
+        <a href="/event-history"><i class="fas fa-history"></i> Event History</a>
+    </div>
+
+    <!-- Sidebar toggle button -->
+    <span class="sidebar-btn" onclick="toggleNav()">&#9776;</span>
+
+    <header class="header">
+        <div class="logo">
+            <a href="/homepage" style="text-decoration: none;">
+                <img src="/images/cityYouth.jpg" alt="SLAMS Logo">
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <% if (user.profile) { %>
+                <img src="<%= user.profile %>" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff;">
+            <% } else { %>
+                <i class="fas fa-user-shield" style="font-size: 24px;"></i>
+            <% } %>
+            <div class="dropdown-content">
+                <a href="/profile">
+                    <i class="fas fa-cogs" style="margin-right: 8px;"></i> Profile
+                </a>
+                <a href="javascript:void(0);" class="logout-btn" onclick="showLogoutModal()">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Log Out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+        <div class="event-details-container">
+            <div class="event-header">
+                <h1 class="event-title"><%= event.title %></h1>
+                <span class="event-status status-<%= event.status.toLowerCase() %>">
+                    <%= event.status %>
+                </span>
+            </div>
+
+            <div class="event-content">
+                <div class="event-image-container">
+                    <img src="/uploads/events/<%= event.image %>" 
+                         alt="<%= event.title %>" 
+                         class="event-image"
+                         onerror="this.onerror=null;this.src='/images/default-event.jpg'">
+                </div>
+
+                <div class="event-info">
+                    <div class="info-section">
+                        <h3 class="info-title"><i class="fas fa-calendar-alt"></i> Date & Time</h3>
+                        <p class="info-content"><%= event.formattedDate %></p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3 class="info-title"><i class="fas fa-map-marker-alt"></i> Location</h3>
+                        <p class="info-content"><%= event.location %></p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3 class="info-title"><i class="fas fa-basketball-ball"></i> Sports</h3>
+                        <div class="sports-list">
+                            <% event.sports.split(',').forEach(sport => { 
+                                const sportLower = sport.trim().toLowerCase();
+                                let iconClass = 'fas fa-question-circle';
+                                
+                                if (sportLower.includes('basketball')) {
+                                    iconClass = 'fas fa-basketball-ball sport-basketball';
+                                } else if (sportLower.includes('volleyball')) {
+                                    iconClass = 'fas fa-volleyball-ball sport-volleyball';
+                                } else if (sportLower.includes('soccer') || sportLower.includes('football')) {
+                                    iconClass = 'fas fa-futbol sport-soccer';
+                                } else if (sportLower.includes('badminton')) {
+                                    iconClass = 'fas fa-table-tennis sport-badminton';
+                                } else if (sportLower.includes('table tennis') || sportLower.includes('pingpong')) {
+                                    iconClass = 'fas fa-table-tennis sport-tabletennis';
+                                } else if (sportLower.includes('chess')) {
+                                    iconClass = 'fas fa-chess sport-chess';
+                                }
+                            %>
+                                <span class="sport-tag">
+                                    <i class="<%= iconClass %>"></i>
+                                    <%= sport.trim() %>
+                                </span>
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <% if (event.appointmentForm) { %>
+                    <div class="info-section">
+                        <h3 class="info-title"><i class="fas fa-file-pdf"></i> Apppointment Form</h3>
+                        <div class="pdf-container">
+                            <a href="/uploads/admin_appointment_form/<%= event.appointmentForm %>" target="_blank" class="pdf-link">
+                                <i class="fas fa-file-pdf"></i> View PDF
+                            </a>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+
+                <div class="info-section full-width">
+                    <h3 class="info-title"><i class="fas fa-align-left"></i> Description</h3>
+                    <p class="info-content"><%= event.description %></p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/events" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Events
+                </a>
+                <a href="/join-team" class="btn btn-join-team">
+                    <i class="fas fa-users"></i> Join a Team
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for logout confirmation -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Are you sure you want to log out?</h3>
+            <button id="confirmLogout" class="confirm-btn">Yes</button>
+            <button id="cancelLogout" class="cancel-btn">No</button>
+        </div>
+    </div>
+
+    <script>
+        let isSidebarOpen = false;
+
+        function toggleNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const content = document.querySelector(".dashboard-container");
+            const sidebarBtn = document.querySelector(".sidebar-btn");
+
+            if (isSidebarOpen) {
+                sidebar.style.left = "-240px";  
+                document.body.classList.remove("sidebar-open");
+                sidebarBtn.innerHTML = "&#9776;";
+            } else {
+                sidebar.style.left = "0";
+                document.body.classList.add("sidebar-open");
+                sidebarBtn.innerHTML = "&#9776;";
+            }
+
+            isSidebarOpen = !isSidebarOpen;
+        }
+
+        // Toggle the sub-sidebar under "Team"
+        function toggleSubSidebar() {
+            const subSidebar = document.getElementById("subSidebar");
+            const teamLink = document.querySelector(".team-link");
+
+            if (subSidebar.style.display === "block") {
+                subSidebar.style.display = "none";
+                teamLink.classList.remove("active");
+            } else {
+                subSidebar.style.display = "block";
+                teamLink.classList.add("active");
+            }
+        }
+
+        // Show the logout confirmation modal
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        document.getElementById('confirmLogout').addEventListener('click', function() {
+            window.location.href = '/logout';  
+        });
+
+        document.getElementById('cancelLogout').addEventListener('click', function() {
+            hideLogoutModal(); 
+        });
+
+        const userProfile = document.querySelector('.user-profile');
+        const dropdown = document.querySelector('.dropdown-content');
+        let hideTimeout;
+
+        userProfile.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+            dropdown.classList.add('show');
+        });
+
+        userProfile.addEventListener('mouseleave', () => {
+            hideTimeout = setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 1500); 
+        });
+    </script>
+</body>
+</html>

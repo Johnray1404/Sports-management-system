@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Team</title>
+    <link rel="stylesheet" href="/styles/frontpage.css">
+    <link rel="stylesheet" href="/styles/userHomepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A154B;
+            --primary-light: #6a1b6a;
+            --secondary-color: #9C4D9A;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #495057;
+            --white: #ffffff;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .teams-list {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--medium-gray);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .team-item:hover {
+            background-color: rgba(74, 21, 75, 0.05);
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-logo i {
+            font-size: 24px;
+            color: var(--dark-gray);
+        }
+
+        .team-info {
+            flex-grow: 1;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .team-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .no-teams {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-gray);
+        }
+
+        .no-teams i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--medium-gray);
+        }
+
+        /* Enhanced Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    padding-top: 5px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease;
+    position: relative;
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--medium-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+}
+
+.modal-header h2 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.close-modal {
+    position: sticky;
+    top: 10px;
+    font-size: 1.75rem;
+    cursor: pointer;
+    color: var(--dark-gray);
+    transition: var(--transition);
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    z-index: 10;
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+    transform: rotate(90deg);
+    background: var(--light-gray);
+}
+
+        .modal-body {
+            padding: 0 2rem 2rem;
+        }
+
+        /* Team Header Section */
+        .team-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin: 2rem 0;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--white);
+            outline: 1px solid var(--medium-gray);
+        }
+
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-avatar i {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+
+        .team-details {
+            flex: 1;
+        }
+
+        .team-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .team-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .meta-card {
+            background: var(--light-gray);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .meta-card h4 {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-card p {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Coach Section */
+        .coach-section {
+            background: rgba(74, 21, 75, 0.05);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .coach-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .coach-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        .coach-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .coach-avatar i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .coach-details h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .coach-details p {
+            color: var(--dark-gray);
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coach-details a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .coach-details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Players Section */
+        .players-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .player-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .player-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid white;
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-avatar i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .player-body {
+            padding: 1rem;
+        }
+
+        .player-detail {
+            display: flex;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .player-detail i {
+            color: var(--secondary-color);
+            width: 20px;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        .player-detail span {
+            color: var(--dark-gray);
+        }
+
+        .no-players {
+            text-align: center;
+            padding: 2rem;
+            color: var(--dark-gray);
+            grid-column: 1 / -1;
+        }
+
+        .no-players i {
+            font-size: 2.5rem;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                max-height: 85vh;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .modal-body {
+                padding: 0 1rem 1rem;
+            }
+
+            .team-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .team-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coach-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .players-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .team-avatar {
+                width: 90px;
+                height: 90px;
+            }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 100px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        
+
+        .confirm-btn,
+        .cancel-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 120px;
+        }
+
+        .confirm-btn {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+            margin-left: 20px;
+        }
+
+        .confirm-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn:hover {
+            background-color: #e53935;
+            transform: translateY(-2px);
+        }
+
+        .modal:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <div id="mySidebar" class="sidebar">
+        <a href="/homepage"><i class="fas fa-home"></i> Home</a>
+        <a href="/posts"><i class="fas fa-newspaper"></i> Posts</a>
+        <a href="/gallery"><i class="fas fa-image"></i> Gallery</a>
+        <a href="/events"><i class="fas fa-calendar-alt"></i> Events</a>
+        <!-- Team link with sub-sidebar -->
+        <a href="javascript:void(0);" class="team-link" onclick="toggleSubSidebar()"><i class="fas fa-users-cog"></i> Teams</a>
+        <div class="sub-sidebar" id="subSidebar">
+            <a href="/my-team" class="active"><i class="fas fa-user"></i> My Team</a>
+            <a href="/join-team"><i class="fas fa-user-plus"></i> Join Team</a>
+            <a href="/all-teams"><i class="fas fa-users"></i> All Teams</a>
+        </div>
+    </div>
+
+    <!-- Sidebar toggle button -->
+    <span class="sidebar-btn" onclick="toggleNav()">&#9776;</span>
+
+    <header class="header">
+        <div class="logo">
+            <a href="/homepage" style="text-decoration: none;">
+                <img src="/images/cityYouth.jpg" alt="SLAMS Logo">
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <% if (user.profile) { %>
+                <img src="<%= user.profile %>" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #4A154B;">
+            <% } else { %>
+                <i class="fas fa-user-shield" style="font-size: 24px;"></i>
+            <% } %>
+            <div class="dropdown-content">
+                <a href="/profile">
+                    <i class="fas fa-cogs" style="margin-right: 8px;"></i> Profile
+                </a>
+                <a href="javascript:void(0);" class="logout-btn" onclick="showLogoutModal()">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Log Out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-users"></i> My Teams</h1>
+        </div>
+
+        <% if (teams && teams.length > 0) { %>
+            <div class="teams-list">
+                <% teams.forEach(team => { %>
+                    <div class="team-item" onclick="showTeamModal('<%= team.id %>')">
+                        <div class="team-logo">
+                            <% if (team.teamProfile) { %>
+                                <img src="/uploads/team_profiles/<%= team.teamProfile %>" alt="<%= team.teamName %>">
+                            <% } else { %>
+                                <i class="fas fa-users"></i>
+                            <% } %>
+                        </div>
+                        
+                        <div class="team-info">
+                            <h3 class="team-name"><%= team.teamName %></h3>
+                            <div class="team-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-landmark"></i> <%= team.organization %>
+                                </span>
+                                <% if (team.event_title) { %>
+                                    <span class="meta-item">
+                                        <i class="fas fa-calendar-alt"></i> <%= team.event_title %>
+                                    </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="no-teams">
+                <i class="fas fa-users"></i>
+                <h3>No Teams Joined</h3>
+                <p>You haven't joined any teams yet. <a href="/join-team">Join a team</a> to get started.</p>
+            </div>
+        <% } %>
+    </main>
+
+    <!-- Team Details Modal -->
+    <div class="modal" id="teamModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> <span id="modalTeamName"></span></h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="team-header">
+                    <div class="team-avatar">
+                        <img id="modalTeamLogo" src="" alt="Team Logo">
+                        <i class="fas fa-users" id="modalTeamIcon"></i>
+                    </div>
+                    <div class="team-details">
+                        <h3 id="modalOrganization"></h3>
+                        <div class="team-meta-grid" id="modalTeamMeta">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coach Section -->
+                <div class="coach-section">
+                    <h3 class="section-title"><i class="fas fa-user-tie"></i> Team Coordinator</h3>
+                    <div class="coach-info" id="coachInfo">
+                        <!-- Coach info will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Players Section -->
+                <div class="players-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-users"></i> Player Roster</h3>
+                        <span class="player-count" id="playerCount">0 players</span>
+                    </div>
+                    <div class="players-grid" id="playersList">
+                        <!-- Players will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for logout confirmation -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Are you sure you want to log out?</h3>
+            <button id="confirmLogout" class="confirm-btn">Yes</button>
+            <button id="cancelLogout" class="cancel-btn">No</button>
+        </div>
+    </div>
+
+    <script>
+        let isSidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
+
+        function setSidebarState(open) {
+            localStorage.setItem('sidebarOpen', open);
+        }
+
+        function toggleNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const content = document.querySelector(".dashboard-container");
+            const sidebarBtn = document.querySelector(".sidebar-btn");
+
+            if (isSidebarOpen) {
+                sidebar.style.left = "-240px";
+                content.style.marginLeft = "0";
+                sidebarBtn.innerHTML = "&#9776;";
+                isSidebarOpen = false;
+            } else {
+                sidebar.style.left = "0";
+                content.style.marginLeft = "240px";
+                sidebarBtn.innerHTML = "&#9776;";
+                isSidebarOpen = true;
+            }
+
+            setSidebarState(isSidebarOpen);
+        }
+
+        function applySidebarState() {
+            const sidebar = document.getElementById("mySidebar");
+            const content = document.querySelector(".dashboard-container");
+            const sidebarBtn = document.querySelector(".sidebar-btn");
+
+            if (isSidebarOpen) {
+                sidebar.style.left = "0";
+                content.style.marginLeft = "240px";
+                sidebarBtn.innerHTML = "&#9776;";
+            } else {
+                sidebar.style.left = "-240px";
+                content.style.marginLeft = "0";
+                sidebarBtn.innerHTML = "&#9776;";
+            }
+        }
+
+        function toggleSubSidebar() {
+            const subSidebar = document.getElementById("subSidebar");
+            const teamLink = document.querySelector(".team-link");
+
+            if (subSidebar.style.display === "block") {
+                subSidebar.style.display = "none";
+                teamLink.classList.remove("active");
+                localStorage.setItem('subSidebarOpen', 'false');
+            } else {
+                subSidebar.style.display = "block";
+                teamLink.classList.add("active");
+                localStorage.setItem('subSidebarOpen', 'true');
+            }
+        }
+
+        function applySubSidebarState() {
+            const subSidebar = document.getElementById("subSidebar");
+            const teamLink = document.querySelector(".team-link");
+            const isSubSidebarOpen = localStorage.getItem('subSidebarOpen') === 'true';
+
+            if (isSubSidebarOpen) {
+                subSidebar.style.display = "block";
+                teamLink.classList.add("active");
+            } else {
+                subSidebar.style.display = "none";
+                teamLink.classList.remove("active");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            applySidebarState();
+            applySubSidebarState();
+        });
+
+        // Show the logout confirmation modal
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        document.getElementById('confirmLogout').addEventListener('click', function() {
+            window.location.href = '/logout';  
+        });
+
+        document.getElementById('cancelLogout').addEventListener('click', function() {
+            hideLogoutModal(); 
+        });
+
+        const userProfile = document.querySelector('.user-profile');
+        const dropdown = document.querySelector('.dropdown-content');
+        let hideTimeout;
+
+        userProfile.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+            dropdown.classList.add('show');
+        });
+
+        userProfile.addEventListener('mouseleave', () => {
+            hideTimeout = setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 1500); 
+        });
+
+        // Team Modal Functions
+        function showTeamModal(teamId) {
+            fetch(`/my-team/${teamId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const modal = document.getElementById('teamModal');
+                    const team = data.team;
+                    const players = data.players;
+
+                    // Set team name
+                    document.getElementById('modalTeamName').textContent = team.teamName;
+
+                    // Set team logo
+                    const teamLogo = document.getElementById('modalTeamLogo');
+                    const teamIcon = document.getElementById('modalTeamIcon');
+                    if (team.teamProfile) {
+                        teamLogo.src = `/uploads/team_profiles/${team.teamProfile}`;
+                        teamLogo.style.display = 'block';
+                        teamIcon.style.display = 'none';
+                    } else {
+                        teamLogo.style.display = 'none';
+                        teamIcon.style.display = 'block';
+                    }
+
+                    // Set organization
+                    document.getElementById('modalOrganization').textContent = team.organization || 'No organization specified';
+
+                    // Set team meta info
+                    const metaContainer = document.getElementById('modalTeamMeta');
+                    metaContainer.innerHTML = '';
+                    
+                    // Event meta card
+                    if (team.event_title) {
+                        const eventItem = document.createElement('div');
+                        eventItem.className = 'meta-card';
+                        eventItem.innerHTML = `
+                            <h4>Event</h4>
+                            <p><i class="fas fa-calendar-alt"></i> ${team.event_title}</p>
+                        `;
+                        metaContainer.appendChild(eventItem);
+                    }
+
+                    // Created at meta card
+                    const createdItem = document.createElement('div');
+                    createdItem.className = 'meta-card';
+                    createdItem.innerHTML = `
+                        <h4>Created</h4>
+                        <p><i class="fas fa-clock"></i> ${new Date(team.created_at).toLocaleDateString()}</p>
+                    `;
+                    metaContainer.appendChild(createdItem);
+
+                    // Organization type meta card
+                    const orgItem = document.createElement('div');
+                    orgItem.className = 'meta-card';
+                    orgItem.innerHTML = `
+                        <h4>Organization Type</h4>
+                        <p><i class="fas fa-landmark"></i> ${team.organization || 'Not specified'}</p>
+                    `;
+                    metaContainer.appendChild(orgItem);
+
+                    // Set coach info
+                    const coachContainer = document.getElementById('coachInfo');
+                    coachContainer.innerHTML = '';
+                    
+                    if (team.coach_name) {
+                        coachContainer.innerHTML = `
+                            <div class="coach-avatar">
+                                ${team.coach_profile ? 
+                                    `<img src="${team.coach_profile}" alt="${team.coach_name}">` : 
+                                    `<i class="fas fa-user-tie"></i>`}
+                            </div>
+                            <div class="coach-details">
+                                <h4>${team.coach_name}</h4>
+                                ${team.coach_email ? `<p><i class="fas fa-envelope"></i> <a href="mailto:${team.coach_email}">${team.coach_email}</a></p>` : ''}
+                                ${team.coach_phone ? `<p><i class="fas fa-phone"></i> ${team.coach_phone}</p>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        coachContainer.innerHTML = `
+                            <div class="coach-avatar">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="coach-details">
+                                <h4>No Coordinator Assigned</h4>
+                                <p>This team currently has no coordinator assigned</p>
+                            </div>
+                        `;
+                    }
+
+                    // Set players list
+                    const playersContainer = document.getElementById('playersList');
+                    playersContainer.innerHTML = '';
+                    
+                    // Update player count
+                    document.getElementById('playerCount').textContent = `${players.length} ${players.length === 1 ? 'player' : 'players'}`;
+                    
+                    if (players.length > 0) {
+                        players.forEach(player => {
+                            const playerCard = document.createElement('div');
+                            playerCard.className = 'player-card';
+                            playerCard.innerHTML = `
+                                <div class="player-header">
+                                    <div class="player-avatar">
+                                        ${player.user_profile ? 
+                                            `<img src="${player.user_profile}" alt="${player.player_name}">` : 
+                                            `<i class="fas fa-user"></i>`}
+                                    </div>
+                                    <div class="player-name">${player.player_name}</div>
+                                </div>
+                                <div class="player-body">
+                                    ${player.sex ? `
+                                        <div class="player-detail">
+                                            <i class="fas fa-venus-mars"></i>
+                                            <span>${player.sex}</span>
+                                        </div>
+                                    ` : ''}
+                                    ${player.age ? `
+                                        <div class="player-detail">
+                                            <i class="fas fa-birthday-cake"></i>
+                                            <span>${player.age} years old</span>
+                                        </div>
+                                    ` : ''}
+                                    ${team.organization === 'school' ? `
+                                        <div class="player-detail">
+                                            <i class="fas fa-school"></i>
+                                            <span>${player.school || 'Not specified'}</span>
+                                        </div>
+                                        ${player.year_level ? `
+                                            <div class="player-detail">
+                                                <i class="fas fa-graduation-cap"></i>
+                                                <span>Year ${player.year_level}</span>
+                                            </div>
+                                        ` : ''}
+                                    ` : `
+                                        <div class="player-detail">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>${player.barangay || 'Not specified'}</span>
+                                        </div>
+                                    `}
+                                </div>
+                            `;
+                            playersContainer.appendChild(playerCard);
+                        });
+                    } else {
+                        playersContainer.innerHTML = `
+                            <div class="no-players">
+                                <i class="fas fa-user-slash"></i>
+                                <h4>No Players Found</h4>
+                                <p>This team currently has no players</p>
+                            </div>
+                        `;
+                    }
+
+                    // Show modal
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                })
+                .catch(error => {
+                    console.error('Error fetching team details:', error);
+                    alert('Failed to load team details');
+                });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('teamModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('teamModal');
+            const logoutModal = document.getElementById('logoutModal');
+            
+            if (event.target === modal) {
+                closeModal();
+            }
+            if (event.target === logoutModal) {
+                hideLogoutModal();
+            }
+        }
+    </script>
+</body>
+</html>

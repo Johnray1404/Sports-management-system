@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Registration - SLAMS</title>
+    <link rel="stylesheet" href="/styles/frontpage.css">
+    <link rel="stylesheet" href="/styles/userHomepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --secondary-color: #2c3e50;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --error-color: #e74c3c;
+            --success-color: #27ae60;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px 20px; 
+            box-sizing: border-box;
+            margin-top: 200px; 
+        }
+
+        .form-container {
+            position: relative;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            width: 100%;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            text-decoration: none;
+            font-size: 1.8rem;
+            color: var(--dark-gray);
+            font-weight: bold;
+            transition: var(--transition);
+            z-index: 10;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--error-color);
+            transform: scale(1.1);
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .form-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        .form-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .left-column,
+        .right-column {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--white);
+            transition: var(--transition);
+            color: #333;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group button:active {
+            transform: translateY(0);
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            background-color: var(--light-gray);
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+            font-weight: 600;
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Custom select styling */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper:after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--dark-gray);
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 30px !important;
+        }
+
+        /* Placeholder styling */
+        .select-placeholder {
+            color: var(--dark-gray);
+        }
+
+        select:not(:focus).select-placeholder {
+            color: var(--dark-gray);
+        }
+
+        select option {
+            color: #333;
+        }
+
+        select option[value=""][disabled] {
+            display: none;
+        }
+
+        /* File input styling */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 15px;
+            background-color: var(--light-gray);
+            border: 1px dashed var(--medium-gray);
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .file-input-label i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: var(--dark-gray);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+            }
+
+            .form-columns {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .left-column,
+            .right-column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <div class="form-container">
+            <a href="/all-teams" class="close-btn" title="Exit">&times;</a>
+            <h2 class="form-title">Player Team Registration</h2>
+
+            <!-- Player Registration Form -->
+            <form action="/player-register" method="POST" enctype="multipart/form-data">
+                <div class="form-columns">
+                    <!-- Left Column -->
+                    <div class="left-column">
+                        <!-- Display team name -->
+                        <div class="form-group">
+                            <div class="team-name">Team: <%= teamName %></div>
+                            <input type="hidden" name="team_id" value="<%= team_id %>">
+                        </div>
+
+                        <!-- Sport selection -->
+                        <div class="form-group">
+                            <label for="player_sport">Sport</label>
+                            <div class="select-wrapper">
+                                <select id="player_sport" name="sports" required class="select-placeholder">
+                                    <option value="" disabled selected hidden>Select a sport</option>
+                                    <% sports.forEach(function(sport) { %>
+                                        <option value="<%= sport.name %>" 
+                                            data-limit="<%= sport.limit %>" 
+                                            data-current="<%= sport.currentCount %>">
+                                            <%= sport.name %> (<%= sport.currentCount %>/<%= sport.limit %>)
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Personal information -->
+                        <div class="form-group">
+                            <label for="player_name">Full Name</label>
+                            <input type="text" id="player_name" name="player_name" required placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate</label>
+                            <input type="date" id="birthdate" name="birthdate" required>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" readonly placeholder="Will be calculated">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="sex">Gender</label>
+                            <select name="sex" id="sex" required>
+                                <option value="" disabled selected hidden>Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Conditional Fields based on Organization Type -->
+                        <% if (organizationType === 'school') { %>
+                            <div class="form-group">
+                                <label for="school">School</label>
+                                <input type="text" id="school" name="school" required placeholder="Enter your school">
+                            </div>
+                        <% } else if (organizationType === 'barangay') { %>
+                            <div class="form-group">
+                                <label for="barangay">Barangay</label>
+                                <input type="text" id="barangay" name="barangay" required placeholder="Enter your barangay">
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="right-column">
+                        <% if (organizationType === 'school') { %>
+                            <div class="form-group">
+                                <label for="year_level">Year Level</label>
+                                <div class="select-wrapper">
+                                    <select name="year_level" id="year_level" required>
+                                        <option value="" disabled selected hidden>Select year level</option>
+                                        <option value="1st Year">1st Year</option>
+                                        <option value="2nd Year">2nd Year</option>
+                                        <option value="3rd Year">3rd Year</option>
+                                        <option value="4th Year">4th Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <!-- Added Contact Number field -->
+                        <div class="form-group">
+                            <label for="contact_no">Contact Number</label>
+                            <input type="tel" id="contact_no" name="contact_no" required placeholder="Enter your contact number">
+                        </div>
+
+                        <!-- Document uploads -->
+                        <div class="form-group">
+                            <label>PSA (Image/PDF)</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-label">
+                                    <i class="fas fa-file-upload"></i>
+                                    <span class="file-text">Click to upload PSA document</span>
+                                </div>
+                                <input type="file" id="PSA" name="PSA" accept=".jpg, .jpeg, .png, .pdf" required>
+                                <div id="PSA-filename" class="file-name"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Waiver (Image/PDF)</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-label">
+                                    <i class="fas fa-file-upload"></i>
+                                    <span class="file-text">Click to upload waiver document</span>
+                                </div>
+                                <input type="file" id="waiver" name="waiver" accept=".jpg, .jpeg, .png, .pdf" required>
+                                <div id="waiver-filename" class="file-name"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Medical Certificate (Image/PDF)</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-input-label">
+                                    <i class="fas fa-file-upload"></i>
+                                    <span class="file-text">Click to upload medical certificate</span>
+                                </div>
+                                <input type="file" id="med_cert" name="med_cert" accept=".jpg, .jpeg, .png, .pdf" required>
+                                <div id="med_cert-filename" class="file-name"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit">
+                                <i class="fas fa-user-plus"></i> Register Player
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (errorMessage) { %>
+                    <div class="error" style="text-align: center; margin-top: 20px;">
+                        <i class="fas fa-exclamation-circle"></i> <%= errorMessage %>
+                    </div>
+                <% } %>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Calculate age based on birthdate
+        document.getElementById('birthdate').addEventListener('change', function() {
+            const birthdate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthdate.getFullYear();
+            const m = today.getMonth() - birthdate.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                age--;
+            }
+
+            document.getElementById('age').value = age;
+        });
+
+        // Handle select placeholder appearance
+        const sportSelect = document.getElementById('player_sport');
+        sportSelect.addEventListener('change', function() {
+            if (this.value !== "") {
+                this.classList.remove('select-placeholder');
+            } else {
+                this.classList.add('select-placeholder');
+            }
+        });
+
+        // Show selected file names
+        document.getElementById('PSA').addEventListener('change', function(e) {
+            document.getElementById('PSA-filename').textContent = e.target.files[0]?.name || '';
+        });
+
+        document.getElementById('waiver').addEventListener('change', function(e) {
+            document.getElementById('waiver-filename').textContent = e.target.files[0]?.name || '';
+        });
+
+        document.getElementById('med_cert').addEventListener('change', function(e) {
+            document.getElementById('med_cert-filename').textContent = e.target.files[0]?.name || '';
+        });
+
+        // Initialize form fields
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as max for birthdate
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('birthdate').setAttribute('max', today);
+            
+            // Add input pattern for contact number
+            const contactInput = document.getElementById('contact_no');
+            contactInput.setAttribute('pattern', '[0-9]{11}');
+            contactInput.setAttribute('title', 'Please enter a valid 11-digit phone number');
+        });
+
+        // Show sport capacity warnings
+        document.getElementById('player_sport').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const current = parseInt(selectedOption.dataset.current);
+            const limit = selectedOption.dataset.limit;
+            
+            if (limit !== 'No limit') {
+                const remaining = parseInt(limit) - current;
+                if (remaining <= 3) {
+                    alert(`Warning: Only ${remaining} spot(s) remaining for ${selectedOption.text.split('(')[0].trim()}`);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
