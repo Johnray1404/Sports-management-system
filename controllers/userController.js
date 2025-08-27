@@ -37,7 +37,7 @@ exports.handleSignup = async (req, res) => {
         return res.render('user/signup', {
             messages: {
                 errors: errors.array(),
-                email: req.body.email
+                oldEmail: req.body.email || ""
             }
         });
     }
@@ -1294,5 +1294,6 @@ exports.uploadProfilePicture = async (req, res) => {
         res.sendStatus(500);
     }
 };
+
 
 
