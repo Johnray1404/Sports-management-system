@@ -33,6 +33,7 @@ const sessionStore = new MySQLStore({
     database: process.env.DB_NAME,
 });
 
+app.set('trust proxy', 1);
 
 app.use(session({
     secret: 'your-secret-key',
@@ -40,9 +41,11 @@ app.use(session({
     saveUninitialized: true,
     store: sessionStore,
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000,
-        secure: false
-    }
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+}
+
 }));
 
 // Middleware to check the session
@@ -57,9 +60,9 @@ app.use(passport.session());
 
 // Google OAuth 2.0 strategy
 passport.use(new GoogleStrategy({
-    clientID: '81239773382-vji129u2mu6lrfs3613oo0rdaachfnd1.apps.googleusercontent.com',
-    clientSecret: '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',
-    callbackURL: 'http://localhost:3000/auth/google/callback',
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         console.log('Google profile:', profile);
@@ -186,3 +189,4 @@ app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 
 });
+
