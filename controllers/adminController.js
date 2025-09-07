@@ -727,8 +727,9 @@ exports.postCreateEvent = async (req, res) => {
         // badminton_single, badminton_double, athletics_100m, athletics_200m, etc.
 
         // Uploaded files
-        const image = req.files?.image?.[0]?.path || null;  // Cloudinary URL
-        const appointmentForm = req.files?.appointmentForm?.[0]?.path || null;
+        const image = req.file && req.file.fieldname === "image" ? req.file.path : null;
+        const appointmentForm = req.file && req.file.fieldname === "appointmentForm" ? req.file.path : null;
+
 
         console.log("Processed data:", {
             title,
@@ -1091,6 +1092,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
