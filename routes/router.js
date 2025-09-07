@@ -169,9 +169,10 @@ router.post('/admin/posts/:postId/delete', adminAuthMiddleware, adminController.
 router.post(
   "/admin/add-post",
   adminAuthMiddleware,
-  upload.array('media', 10),   // upload to Cloudinary
+  adminPostUpload.array('media', 10),   // ✅ Cloudinary upload
   adminController.postAdminAddPost
 );
+
 router.get("/admin/events", adminAuthMiddleware, adminController.getAdminEvents);
 router.get("/admin/events/create", adminAuthMiddleware, adminController.getCreateEvent);
 router.get("/admin/events/:id", adminAuthMiddleware, adminController.getEventDetails);
@@ -190,6 +191,7 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
+
 
 
 
