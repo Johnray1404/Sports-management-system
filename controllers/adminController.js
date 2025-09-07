@@ -431,21 +431,23 @@ exports.postAdminAddPost = async (req, res) => {
   try {
     const caption = req.body.caption || '';
     const mediaFiles = req.files || [];
+    console.log("Uploaded files:", mediaFiles);
 
-    // Separate images and videos with Cloudinary URLs
+
     const images = mediaFiles
     .filter(file => file.mimetype.startsWith('image'))
     .map(file => ({
-        url: file.path,        // Cloudinary secure URL
-        public_id: file.public_id   // ✅ correct
+        url: file.path,
+        public_id: file.public_id || file.filename   // fallback
     }));
 
     const videos = mediaFiles
     .filter(file => file.mimetype.startsWith('video'))
     .map(file => ({
         url: file.path,
-        public_id: file.public_id   // ✅ correct
+        public_id: file.public_id || file.filename
     }));
+
 
 
     // Save to DB (store JSON with URLs + public_ids)
@@ -1092,6 +1094,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
