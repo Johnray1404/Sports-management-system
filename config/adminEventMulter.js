@@ -1,6 +1,6 @@
+const { cloudinary } = require("./cloudinary"); 
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
-const cloudinary = require("./cloudinary");
 
 // ✅ Single CloudinaryStorage with dynamic folder & format
 const storage = new CloudinaryStorage({
