@@ -433,22 +433,19 @@ exports.postAdminAddPost = async (req, res) => {
     const mediaFiles = req.files || [];
     console.log("Uploaded files:", mediaFiles);
 
-
     const images = mediaFiles
-    .filter(file => file.mimetype.startsWith('image'))
-    .map(file => ({
-        url: file.path,
-        public_id: file.public_id || file.filename   // fallback
-    }));
+      .filter(file => file.mimetype.startsWith('image'))
+      .map(file => ({
+        url: file.path,         // ✅ Cloudinary URL
+        public_id: file.filename // ✅ Cloudinary public_id
+      }));
 
     const videos = mediaFiles
-    .filter(file => file.mimetype.startsWith('video'))
-    .map(file => ({
+      .filter(file => file.mimetype.startsWith('video'))
+      .map(file => ({
         url: file.path,
-        public_id: file.public_id || file.filename
-    }));
-
-
+        public_id: file.filename
+      }));
 
     // Save to DB (store JSON with URLs + public_ids)
     await db.execute(
@@ -1094,6 +1091,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
