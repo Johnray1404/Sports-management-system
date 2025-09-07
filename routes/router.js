@@ -11,7 +11,7 @@ const adminAuthMiddleware = require('../middleware/adminAuth');
 const coachAuthMiddleware = require('../middleware/coachAuth');
 const coachModel = require('../models/coachModel');
 const db = require('../config/db');
-const { upload: adminPostUpload } = require('../config/cloudinary');
+const { adminPostUpload } = require('../config/cloudinary');
 const uploadProfile = require('../config/adminProfileMulter');
 const { combinedUpload } = require('../config/adminAppointmentMulter');
 
@@ -169,7 +169,7 @@ router.post('/admin/posts/:postId/delete', adminAuthMiddleware, adminController.
 router.post(
   "/admin/add-post",
   adminAuthMiddleware,
-  adminPostUpload.array('media', 10),   // ✅ Cloudinary upload
+  adminPostUpload.array('media', 10),  // Cloudinary upload
   adminController.postAdminAddPost
 );
 
@@ -191,6 +191,7 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
+
 
 
 
