@@ -343,12 +343,13 @@
 
             <div class="event-content">
                 <div class="event-image-container">
-                    <img src="/uploads/events/<%= event.image %>" 
-                         alt="<%= event.title %>" 
-                         class="event-image"
-                         loading="eager"
-                         decoding="async"
-                         onerror="this.onerror=null;this.src='/images/default-event.jpg'">
+                    <!-- ✅ Use direct Cloudinary URL -->
+                    <img src="<%= event.image %>" 
+                        alt="<%= event.title %>" 
+                        class="event-image"
+                        loading="eager"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='/images/default-event.jpg'">
                 </div>
 
                 <div class="event-info">
@@ -398,9 +399,14 @@
                     <div class="info-section">
                         <h3 class="info-title"><i class="fas fa-file-pdf"></i> Appointment Form</h3>
                         <div class="pdf-container">
-                            <a href="/uploads/admin_appointment_form/<%= event.appointmentForm %>" target="_blank" class="pdf-link">
-                                <i class="fas fa-file-pdf"></i> View PDF
-                            </a>
+                            <!-- ✅ Direct Cloudinary PDF URL -->
+                            <% if (event.appointmentForm) { %>
+                                <a href="<%= event.appointmentForm %>" target="_blank" class="pdf-link">
+                                    <i class="fas fa-file-pdf"></i> View PDF
+                                </a>
+                            <% } else { %>
+                                <p class="info-content">No appointment form uploaded.</p>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -421,6 +427,7 @@
             </div>
         </div>
     </main>
+
 
     <!-- Modal for logout confirmation -->
     <div id="logoutModal" class="modal">
