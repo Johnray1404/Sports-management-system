@@ -1,6 +1,6 @@
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
-const cloudinary = require("./cloudinary"); // your cloudinary config
+const cloudinary = require("./cloudinary");
 
 // Storage for event image
 const eventStorage = new CloudinaryStorage({
@@ -8,13 +8,9 @@ const eventStorage = new CloudinaryStorage({
   params: {
     folder: "adminEvents",
     allowed_formats: ["jpg", "jpeg", "png"],
-    public_id: (req, file) => {
-      return "event_" + Date.now(); // rename format
-    },
+    public_id: () => "event_" + Date.now(),
   },
 });
-
-const eventUpload = multer({ storage: eventStorage });
 
 // Storage for appointment form (PDF)
 const appointmentStorage = new CloudinaryStorage({
@@ -22,19 +18,24 @@ const appointmentStorage = new CloudinaryStorage({
   params: {
     folder: "adminAppointmentForms",
     allowed_formats: ["pdf"],
-    public_id: (req, file) => {
-      return "appointment_" + Date.now();
-    },
+    public_id: () => "appointment_" + Date.now(),
   },
 });
 
+// Multer instances
+const eventUpload = multer({ storage: eventStorage });
 const appointmentUpload = multer({ storage: appointmentStorage });
 
-// Combined upload
-const combinedUpload = multer().fields([
-  { name: "image", maxCount: 1 },
-  { name: "appointmentForm", maxCount: 1 },
-]);
+// Combined uploader (use both storages)
+const combinedUpload = (req, res, next) => {
+  eventUpload.single("image")(req, res, function (err) {
+    if (err) return next(err);
+    appointmentUpload.single("appointmentForm")(req, res, function (err) {
+      if (err) return next(err);
+      next();
+    });
+  });
+};
 
 module.exports = {
   eventUpload: eventUpload.single("image"),
