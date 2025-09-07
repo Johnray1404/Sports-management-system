@@ -22,28 +22,39 @@ const appointmentStorage = new CloudinaryStorage({
   },
 });
 
-// Two separate multer instances
+// Create two multer instances
 const eventUpload = multer({ storage: eventStorage });
 const appointmentUpload = multer({ storage: appointmentStorage });
 
-// ✅ Combined uploader with fields
-const combinedUpload = (req, res, next) => {
-  const uploadEvent = eventUpload.single("image");
-  const uploadAppointment = appointmentUpload.single("appointmentForm");
-
-  uploadEvent(req, res, function (err) {
-    if (err) return next(err);
-
-    uploadAppointment(req, res, function (err) {
-      if (err) return next(err);
-
-      next();
-    });
-  });
-};
+// ✅ Combined uploader with fields (use `.fields`)
+const combinedUpload = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: async (req, file) => {
+      if (file.fieldname === "image") {
+        return {
+          folder: "adminEvents",
+          allowed_formats: ["jpg", "jpeg", "png"],
+          public_id: "event_" + Date.now(),
+        };
+      }
+      if (file.fieldname === "appointmentForm") {
+        return {
+          folder: "adminAppointmentForms",
+          allowed_formats: ["pdf"],
+          public_id: "appointment_" + Date.now(),
+        };
+      }
+      return null;
+    },
+  }),
+}).fields([
+  { name: "image", maxCount: 1 },
+  { name: "appointmentForm", maxCount: 1 },
+]);
 
 module.exports = {
-  eventUpload: eventUpload.single("image"),
-  appointmentUpload: appointmentUpload.single("appointmentForm"),
+  eventUpload,
+  appointmentUpload,
   combinedUpload,
 };
