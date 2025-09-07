@@ -292,60 +292,67 @@
 
     <!-- Main Content -->
     <main class="dashboard-container">
-        <h2 class="page-title"><i class="fas fa-calendar-alt"></i> Events Management</h2>
+    <h2 class="page-title"><i class="fas fa-calendar-alt"></i> Events Management</h2>
 
-        <% if (events && events.length > 0) { %>
-            <ul class="events-list">
-                <% events.forEach(event => { %>
-                    <li class="event-item">
-                        <a href="/admin/events/<%= event.id %>" class="event-link">
-                            <img src="/uploads/events/<%= event.image %>" alt="<%= event.title %>" class="event-image">
-                            <div class="event-details">
-                                <div>
-                                    <div class="event-header">
-                                        <h3 class="event-title"><%= event.title %></h3>
-                                        <div class="event-meta">
-                                            <span class="meta-item">
-                                                <i class="fas fa-calendar-alt meta-icon"></i>
-                                                <%= new Date(event.date_schedule).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %>
-                                            </span>
-                                            <span class="meta-item">
-                                                <i class="fas fa-clock meta-icon"></i>
-                                                <%= new Date(event.date_schedule).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
-                                            </span>
-                                            <span class="meta-item">
-                                                <i class="fas fa-map-marker-alt meta-icon"></i>
-                                                <%= event.location %>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <% if (event.description) { %>
-                                        <p class="event-description"><%= event.description.length > 150 ? event.description.substring(0, 150) + '...' : event.description %></p>
-                                    <% } %>
-                                </div>
-                                <div class="event-footer">
-                                    <span class="event-date">
-                                        Created: <%= new Date(event.created_at).toLocaleDateString() %>
-                                    </span>
-                                    <span class="view-btn">
-                                        Manage Event <i class="fas fa-chevron-right" style="margin-left: 5px;"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                <% }); %>
-            </ul>
-        <% } else { %>
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="far fa-calendar-alt"></i>
+    <% if (events && events.length > 0) { %>
+        <ul class="events-list">
+        <% events.forEach(event => { %>
+            <li class="event-item">
+            <a href="/admin/events/<%= event.id %>" class="event-link">
+                <!-- ✅ Use Cloudinary URL directly -->
+                <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
+
+                <div class="event-details">
+                <div>
+                    <div class="event-header">
+                    <h3 class="event-title"><%= event.title %></h3>
+                    <div class="event-meta">
+                        <span class="meta-item">
+                        <i class="fas fa-calendar-alt meta-icon"></i>
+                        <%= new Date(event.date_schedule).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %>
+                        </span>
+                        <span class="meta-item">
+                        <i class="fas fa-clock meta-icon"></i>
+                        <%= new Date(event.date_schedule).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
+                        </span>
+                        <span class="meta-item">
+                        <i class="fas fa-map-marker-alt meta-icon"></i>
+                        <%= event.location %>
+                        </span>
+                    </div>
+                    </div>
+
+                    <% if (event.description) { %>
+                    <p class="event-description">
+                        <%= event.description.length > 150 ? event.description.substring(0, 150) + '...' : event.description %>
+                    </p>
+                    <% } %>
                 </div>
-                <h3 class="empty-text">No events created yet</h3>
-                <p>Click the button below to create your first event</p>
-            </div>
-        <% } %>
+
+                <div class="event-footer">
+                    <span class="event-date">
+                    Created: <%= new Date(event.created_at).toLocaleDateString() %>
+                    </span>
+                    <span class="view-btn">
+                    Manage Event <i class="fas fa-chevron-right" style="margin-left: 5px;"></i>
+                    </span>
+                </div>
+                </div>
+            </a>
+            </li>
+        <% }); %>
+        </ul>
+    <% } else { %>
+        <div class="empty-state">
+        <div class="empty-icon">
+            <i class="far fa-calendar-alt"></i>
+        </div>
+        <h3 class="empty-text">No events created yet</h3>
+        <p>Click the button below to create your first event</p>
+        </div>
+    <% } %>
     </main>
+
 
     <!-- Floating button to create new event -->
     <button class="create-event-btn" onclick="window.location.href='/admin/events/create'">
