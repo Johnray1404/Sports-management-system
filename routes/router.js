@@ -13,7 +13,7 @@ const coachModel = require('../models/coachModel');
 const db = require('../config/db');
 const { adminPostUpload } = require('../config/cloudinary');
 const uploadProfile = require('../config/adminProfileMulter');
-const { combinedUpload } = require('../config/adminAppointmentMulter');
+const { combinedUpload } = require("../config/adminEventMulter");
 
  
 
@@ -169,7 +169,7 @@ router.post('/admin/posts/:postId/delete', adminAuthMiddleware, adminController.
 router.post(
   "/admin/add-post",
   adminAuthMiddleware,
-  adminPostUpload.array('media', 10),  // Cloudinary upload
+  adminPostUpload.array('media', 10),   // ✅ Cloudinary upload
   adminController.postAdminAddPost
 );
 
@@ -178,7 +178,12 @@ router.get("/admin/events/create", adminAuthMiddleware, adminController.getCreat
 router.get("/admin/events/:id", adminAuthMiddleware, adminController.getEventDetails);
 router.get("/admin/events/edit/:id", adminAuthMiddleware, adminController.getEditEvent);
 router.post("/admin/events/update/:id", adminAuthMiddleware, combinedUpload, adminController.postUpdateEvent);
-router.post("/admin/events/create", adminAuthMiddleware, combinedUpload, adminController.postCreateEvent);
+router.post(
+  "/admin/events/create",
+  adminAuthMiddleware,
+  combinedUpload,
+  adminController.postCreateEvent
+);
 router.get("/admin/coach", adminAuthMiddleware, adminController.getAdminCoach);
 router.post("/admin/coach/updateStatus", adminAuthMiddleware, adminController.updateCoachStatus);
 router.get("/admin/users", adminAuthMiddleware, adminController.getAdminUsers);
@@ -191,9 +196,6 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
-
-
-
 
 
 
