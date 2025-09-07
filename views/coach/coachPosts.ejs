@@ -161,75 +161,90 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="post-caption">
                         <p><%= post.caption %></p>
                     </div>
-                    <% if (post.images && post.images.length > 0 || post.videos && post.videos.length > 0) { %>
+
+                    <% if ((post.images && post.images.length > 0) || (post.videos && post.videos.length > 0)) { %>
                         <div class="media-container">
                             <% 
                                 const allMedia = [];
-                                if (post.images) allMedia.push(...post.images.map(img => ({ type: 'image', src: img.trim() })));
-                                if (post.videos) allMedia.push(...post.videos.map(video => ({ type: 'video', src: video.trim() })));
-                                
+                                if (post.images) {
+                                    allMedia.push(...post.images.map(img => ({
+                                        type: 'image',
+                                        src: typeof img === 'string' ? img : img.url
+                                    })));
+                                }
+                                if (post.videos) {
+                                    allMedia.push(...post.videos.map(video => ({
+                                        type: 'video',
+                                        src: typeof video === 'string' ? video : video.url
+                                    })));
+                                }
                                 const mediaCount = allMedia.length;
                             %>
+
                             <% if (mediaCount === 1) { %>
                                 <div class="media-grid">
                                     <% if (allMedia[0].type === 'image') { %>
-                                        <img src="/uploads/adminPosts/<%= allMedia[0].src %>" class="single-media media-item" 
+                                        <img src="<%= allMedia[0].src %>" class="single-media media-item" 
                                             onclick="openLightbox(event, '<%= allMedia[0].src %>', 'image', 0, <%= mediaCount %>)">
                                     <% } else { %>
                                         <div class="video-wrapper">
                                             <video controls class="single-media media-item">
-                                                <source src="/uploads/adminPosts/<%= allMedia[0].src %>" type="video/mp4">
+                                                <source src="<%= allMedia[0].src %>" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>
                                         </div>
                                     <% } %>
                                 </div>
+
                             <% } else if (mediaCount === 2) { %>
                                 <div class="media-grid grid-2">
                                     <% allMedia.forEach((media, index) => { %>
                                         <% if (media.type === 'image') { %>
-                                            <img src="/uploads/adminPosts/<%= media.src %>" class="media-item" 
+                                            <img src="<%= media.src %>" class="media-item" 
                                                 onclick="openLightbox(event, '<%= media.src %>', 'image', <%= index %>, <%= mediaCount %>)">
                                         <% } else { %>
                                             <div class="video-wrapper">
                                                 <video controls class="media-item">
-                                                    <source src="/uploads/adminPosts/<%= media.src %>" type="video/mp4">
+                                                    <source src="<%= media.src %>" type="video/mp4">
                                                     Your browser does not support the video tag.
                                                 </video>
                                             </div>
                                         <% } %>
                                     <% }); %>
                                 </div>
+
                             <% } else if (mediaCount === 3) { %>
                                 <div class="media-grid grid-3">
                                     <% allMedia.forEach((media, index) => { %>
                                         <% if (media.type === 'image') { %>
-                                            <img src="/uploads/adminPosts/<%= media.src %>" class="media-item" 
+                                            <img src="<%= media.src %>" class="media-item" 
                                                 onclick="openLightbox(event, '<%= media.src %>', 'image', <%= index %>, <%= mediaCount %>)">
                                         <% } else { %>
                                             <div class="video-wrapper">
                                                 <video controls class="media-item">
-                                                    <source src="/uploads/adminPosts/<%= media.src %>" type="video/mp4">
+                                                    <source src="<%= media.src %>" type="video/mp4">
                                                     Your browser does not support the video tag.
                                                 </video>
                                             </div>
                                         <% } %>
                                     <% }); %>
                                 </div>
+
                             <% } else if (mediaCount >= 4) { %>
                                 <div class="media-grid grid-4-plus">
                                     <% allMedia.slice(0, 4).forEach((media, index) => { %>
                                         <div style="position: relative;">
                                             <% if (media.type === 'image') { %>
-                                                <img src="/uploads/adminPosts/<%= media.src %>" class="media-item" 
+                                                <img src="<%= media.src %>" class="media-item" 
                                                     onclick="openLightbox(event, '<%= media.src %>', 'image', <%= index %>, <%= mediaCount %>)">
                                             <% } else { %>
                                                 <div class="video-wrapper">
                                                     <video controls class="media-item">
-                                                        <source src="/uploads/adminPosts/<%= media.src %>" type="video/mp4">
+                                                        <source src="<%= media.src %>" type="video/mp4">
                                                         Your browser does not support the video tag.
                                                     </video>
                                                 </div>
@@ -245,6 +260,7 @@
                             <% } %>
                         </div>
                     <% } %>
+
                     <div class="post-actions">
                         <button class="like-btn <%= post.hasLiked ? 'active' : '' %>" 
                                 onclick="reactToPost(<%= post.id %>, '<%= post.hasLiked ? 'remove' : 'like' %>')">
@@ -260,6 +276,7 @@
                 </div>
             <% }); %>
         </div>
+
         
         <!-- Lightbox -->
         <div id="lightbox" class="lightbox">
