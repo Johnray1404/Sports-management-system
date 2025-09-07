@@ -2,59 +2,36 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const cloudinary = require("./cloudinary");
 
-// Storage for event image
-const eventStorage = new CloudinaryStorage({
+// ✅ Single CloudinaryStorage with dynamic folder & format
+const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "adminEvents",
-    allowed_formats: ["jpg", "jpeg", "png"],
-    public_id: () => "event_" + Date.now(),
+  params: async (req, file) => {
+    if (file.fieldname === "image") {
+      return {
+        folder: "adminEvents",
+        allowed_formats: ["jpg", "jpeg", "png"],
+        public_id: "event_" + Date.now(),
+      };
+    }
+    if (file.fieldname === "appointmentForm") {
+      return {
+        folder: "adminAppointmentForms",
+        allowed_formats: ["pdf"],
+        public_id: "appointment_" + Date.now(),
+      };
+    }
+    // default fallback
+    return {
+      folder: "misc",
+      public_id: "file_" + Date.now(),
+    };
   },
 });
 
-// Storage for appointment form (PDF)
-const appointmentStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "adminAppointmentForms",
-    allowed_formats: ["pdf"],
-    public_id: () => "appointment_" + Date.now(),
-  },
-});
-
-// Create two multer instances
-const eventUpload = multer({ storage: eventStorage });
-const appointmentUpload = multer({ storage: appointmentStorage });
-
-// ✅ Combined uploader with fields (use `.fields`)
-const combinedUpload = multer({
-  storage: new CloudinaryStorage({
-    cloudinary,
-    params: async (req, file) => {
-      if (file.fieldname === "image") {
-        return {
-          folder: "adminEvents",
-          allowed_formats: ["jpg", "jpeg", "png"],
-          public_id: "event_" + Date.now(),
-        };
-      }
-      if (file.fieldname === "appointmentForm") {
-        return {
-          folder: "adminAppointmentForms",
-          allowed_formats: ["pdf"],
-          public_id: "appointment_" + Date.now(),
-        };
-      }
-      return null;
-    },
-  }),
-}).fields([
+// ✅ Use `.fields()` for both inputs
+const combinedUpload = multer({ storage }).fields([
   { name: "image", maxCount: 1 },
   { name: "appointmentForm", maxCount: 1 },
 ]);
 
-module.exports = {
-  eventUpload,
-  appointmentUpload,
-  combinedUpload,
-};
+module.exports = { combinedUpload };
