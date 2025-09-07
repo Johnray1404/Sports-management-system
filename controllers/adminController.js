@@ -428,28 +428,37 @@ exports.getAdminAddPost = (req, res) => {
 
 // POST Add Post
 exports.postAdminAddPost = async (req, res) => {
-    try {
-        const caption = req.body.caption || '';
-        const mediaFiles = req.files;
+  try {
+    const caption = req.body.caption || '';
+    const mediaFiles = req.files || [];
 
-        const images = mediaFiles
-            .filter(file => file.mimetype.startsWith('image'))
-            .map(file => file.filename);
+    // Separate images and videos with Cloudinary URLs
+    const images = mediaFiles
+    .filter(file => file.mimetype.startsWith('image'))
+    .map(file => ({
+        url: file.path,        // Cloudinary secure URL
+        public_id: file.public_id   // ✅ correct
+    }));
 
-        const videos = mediaFiles
-            .filter(file => file.mimetype.startsWith('video'))
-            .map(file => file.filename);
+    const videos = mediaFiles
+    .filter(file => file.mimetype.startsWith('video'))
+    .map(file => ({
+        url: file.path,
+        public_id: file.public_id   // ✅ correct
+    }));
 
-        await db.execute(
-            "INSERT INTO posts (images, videos, caption) VALUES (?, ?, ?)",
-            [JSON.stringify(images), JSON.stringify(videos), caption]
-        );
 
-        res.redirect("/admin/posts");
-    } catch (error) {
-        console.error("Error uploading post:", error);
-        res.status(500).send("Error saving the post.");
-    }
+    // Save to DB (store JSON with URLs + public_ids)
+    await db.execute(
+      "INSERT INTO posts (images, videos, caption) VALUES (?, ?, ?)",
+      [JSON.stringify(images), JSON.stringify(videos), caption]
+    );
+
+    res.redirect("/admin/posts");
+  } catch (error) {
+    console.error("Error uploading post:", error);
+    res.status(500).send("Error saving the post.");
+  }
 };
 
 //Delete posts
@@ -1083,6 +1092,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
