@@ -9,6 +9,8 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('./models/userModel');
+require('dotenv').config();
+const { cloudinary } = require('./config/cloudinary');
 
 const app = express();
 
@@ -189,4 +191,5 @@ app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 
 });
+
 
