@@ -22,16 +22,21 @@ const appointmentStorage = new CloudinaryStorage({
   },
 });
 
-// Multer instances
+// Two separate multer instances
 const eventUpload = multer({ storage: eventStorage });
 const appointmentUpload = multer({ storage: appointmentStorage });
 
-// Combined uploader (use both storages)
+// ✅ Combined uploader with fields
 const combinedUpload = (req, res, next) => {
-  eventUpload.single("image")(req, res, function (err) {
+  const uploadEvent = eventUpload.single("image");
+  const uploadAppointment = appointmentUpload.single("appointmentForm");
+
+  uploadEvent(req, res, function (err) {
     if (err) return next(err);
-    appointmentUpload.single("appointmentForm")(req, res, function (err) {
+
+    uploadAppointment(req, res, function (err) {
       if (err) return next(err);
+
       next();
     });
   });
