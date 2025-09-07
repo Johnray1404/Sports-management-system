@@ -14,12 +14,14 @@ const storage = new CloudinaryStorage({
       };
     }
     if (file.fieldname === "appointmentForm") {
-      return {
+    return {
         folder: "adminAppointmentForms",
         allowed_formats: ["pdf"],
+        resource_type: "raw",   // ✅ Important for non-images
         public_id: "appointment_" + Date.now(),
-      };
+    };
     }
+
     // default fallback
     return {
       folder: "misc",
