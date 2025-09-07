@@ -726,9 +726,9 @@ exports.postCreateEvent = async (req, res) => {
         // These arrays now directly contain values like:
         // badminton_single, badminton_double, athletics_100m, athletics_200m, etc.
 
-        // Uploaded files
-        const image = req.file && req.file.fieldname === "image" ? req.file.path : null;
-        const appointmentForm = req.file && req.file.fieldname === "appointmentForm" ? req.file.path : null;
+       // Uploaded files
+        const image = req.files?.image ? req.files.image[0].path : null;
+        const appointmentForm = req.files?.appointmentForm ? req.files.appointmentForm[0].path : null;
 
 
         console.log("Processed data:", {
@@ -1092,6 +1092,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
