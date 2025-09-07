@@ -11,7 +11,7 @@ const adminAuthMiddleware = require('../middleware/adminAuth');
 const coachAuthMiddleware = require('../middleware/coachAuth');
 const coachModel = require('../models/coachModel');
 const db = require('../config/db');
-const { upload } = require('../config/cloudinary');
+const { upload: adminPostUpload } = require('../config/cloudinary');
 const uploadProfile = require('../config/adminProfileMulter');
 const { combinedUpload } = require('../config/adminAppointmentMulter');
 
@@ -190,6 +190,7 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
+
 
 
 
