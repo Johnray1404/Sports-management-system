@@ -67,7 +67,7 @@
                     <div class="team-card <%= team.team_status %>">
                         <div class="team-header">
                             <% if (team.teamProfile) { %>
-                                <img src="/uploads/team_profiles/<%= team.teamProfile %>" alt="<%= team.teamName %>" class="team-profile">
+                                <img src="<%= team.teamProfile %>" alt="<%= team.teamName %>" class="team-profile">
                             <% } else { %>
                                 <div class="team-profile" style="background: #eee; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-users" style="font-size: 30px; color: #aaa;"></i>
@@ -138,7 +138,7 @@
                                 <h3 class="section-title"><i class="fas fa-calendar-check"></i> Event Details</h3>
                                 <% if (team.event_image) { %>
                                     <div class="event-image-container">
-                                        <img src="/uploads/events/<%= team.event_image %>" alt="<%= team.event_title %>" class="event-image">
+                                        <img src="<%= team.event_image %>" alt="<%= team.event_title %>" class="event-image">
                                     </div>
                                 <% } %>
                                 <h4 class="event-title"><%= team.event_title %></h4>
