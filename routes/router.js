@@ -3,15 +3,17 @@ const userController = require('../controllers/userController');
 const coachController = require('../controllers/coachController');
 const adminController = require('../controllers/adminController');
 const router = express.Router();
-const { uploadFiles, upload } = require('../config/playerMulter');
-const { playerDocsUpload } = require('../config/cloudinary');
 const { check } = require('express-validator');
 const { authMiddleware, checkTermsAccepted } = require('../middleware/auth');
 const adminAuthMiddleware = require('../middleware/adminAuth');
 const coachAuthMiddleware = require('../middleware/coachAuth');
 const coachModel = require('../models/coachModel');
 const db = require('../config/db');
-const { adminPostUpload, coachRegisterUpload } = require('../config/cloudinary');
+const { adminPostUpload,
+        coachCertificateUpload,
+        coachRegisterUpload,
+        playerDocsUpload,
+        userProfileUpload } = require('../config/cloudinary');
 const uploadProfile = require('../config/adminProfileMulter');
 const { combinedUpload } = require("../config/adminEventMulter");
 
