@@ -140,11 +140,12 @@
                         <div class="media-container">
                             <% 
                                 const allMedia = [];
-                                if (post.images) allMedia.push(...post.images.map(img => ({ type: 'image', src: img.trim() })));
-                                if (post.videos) allMedia.push(...post.videos.map(video => ({ type: 'video', src: video.trim() })));
+                                if (post.images) allMedia.push(...post.images.map(img => ({ type: 'image', src: img.url })));
+                                if (post.videos) allMedia.push(...post.videos.map(video => ({ type: 'video', src: video.url })));
                                 
                                 const mediaCount = allMedia.length;
                             %>
+
                             <% if (mediaCount === 1) { %>
                                 <div class="media-grid">
                                     <% if (allMedia[0].type === 'image') { %>
