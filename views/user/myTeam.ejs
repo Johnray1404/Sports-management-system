@@ -841,7 +841,7 @@
                     const teamLogo = document.getElementById('modalTeamLogo');
                     const teamIcon = document.getElementById('modalTeamIcon');
                     if (team.teamProfile) {
-                        teamLogo.src = `/uploads/team_profiles/${team.teamProfile}`;
+                        teamLogo.src = `${team.teamProfile}`;
                         teamLogo.style.display = 'block';
                         teamIcon.style.display = 'none';
                     } else {
@@ -1008,5 +1008,4 @@
         }
     </script>
 </body>
-
 </html>
