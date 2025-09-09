@@ -259,7 +259,13 @@
                     <% events.forEach(event => { %>
                         <li class="event-item">
                             <a href="/coach/events/<%= event.id %>" class="event-link">
-                                <img src="/uploads/events/<%= event.image %>" alt="<%= event.title %>" class="event-image">
+                                <!-- 🔹 Cloudinary Event Image -->
+                                <% if (event.image) { %>
+                                    <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
+                                <% } else { %>
+                                    <img src="https://via.placeholder.com/400x250?text=No+Image" alt="No Image" class="event-image">
+                                <% } %>
+
                                 <div class="event-details">
                                     <div>
                                         <div class="event-header">
@@ -280,7 +286,9 @@
                                             </div>
                                         </div>
                                         <% if (event.description) { %>
-                                            <p class="event-description"><%= event.description.length > 150 ? event.description.substring(0, 150) + '...' : event.description %></p>
+                                            <p class="event-description">
+                                                <%= event.description.length > 150 ? event.description.substring(0, 150) + '...' : event.description %>
+                                            </p>
                                         <% } %>
                                     </div>
                                     <div class="event-footer">
@@ -307,6 +315,7 @@
             <% } %>
         </div>
     </main>
+
 
     <!-- Modal for logout confirmation -->
     <div id="logoutModal" class="modal">
