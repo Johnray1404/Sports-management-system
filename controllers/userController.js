@@ -215,7 +215,7 @@ exports.homepage = async (req, res) => {
 };
 
 
-// Get Gallery
+// Get Gallery for users
 exports.getGallery = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -235,75 +235,63 @@ exports.getGallery = async (req, res) => {
             ORDER BY created_at DESC
         `);
 
+        console.log(`Found ${posts.length} posts with potential media`);
+
         const recentMediaItems = [];
         const olderMediaItems = [];
 
         posts.forEach(post => {
-        const postDate = new Date(post.created_at);
-        const isRecent = postDate >= tenDaysAgo;
+            const postDate = new Date(post.created_at);
+            const isRecent = postDate >= tenDaysAgo;
 
-        // 🔹 Process images
-        if (post.images && post.images !== '[]') {
-            try {
-                let images = [];
-                if (post.images.startsWith('[')) {
-                    images = JSON.parse(post.images); // array of URLs
-                } else {
-                    images = [post.images]; // single URL stored as string
-                }
-
-                images.forEach(imageUrl => {
-                    if (imageUrl && typeof imageUrl === 'string') {
-                        const mediaItem = {
-                            type: 'image',
-                            url: imageUrl.trim(),
-                            createdAt: post.created_at,
-                            postId: post.id,
-                            filename: imageUrl.split('/').pop()
-                        };
-                        if (isRecent) {
-                            recentMediaItems.push(mediaItem);
-                        } else {
-                            olderMediaItems.push(mediaItem);
-                        }
+            // 🔹 Process images (saved as [{ url, public_id }])
+            if (post.images && post.images !== '[]') {
+                try {
+                    const images = JSON.parse(post.images);
+                    if (Array.isArray(images)) {
+                        images.forEach(imgObj => {
+                            if (imgObj && imgObj.url) {
+                                const mediaItem = {
+                                    type: 'image',
+                                    url: imgObj.url, // ✅ Cloudinary URL
+                                    createdAt: post.created_at,
+                                    postId: post.id,
+                                    filename: imgObj.public_id || imgObj.url.split('/').pop()
+                                };
+                                if (isRecent) recentMediaItems.push(mediaItem);
+                                else olderMediaItems.push(mediaItem);
+                            }
+                        });
                     }
-                });
-            } catch (e) {
-                console.error(`Error parsing images for post ${post.id}:`, e, post.images);
-            }
-        }
-
-        // 🔹 Process videos
-        if (post.videos && post.videos !== '[]') {
-            try {
-                let videos = [];
-                if (post.videos.startsWith('[')) {
-                    videos = JSON.parse(post.videos);
-                } else {
-                    videos = [post.videos];
+                } catch (e) {
+                    console.error(`Error parsing images for post ${post.id}:`, e);
                 }
-
-                videos.forEach(videoUrl => {
-                    if (videoUrl && typeof videoUrl === 'string') {
-                        const mediaItem = {
-                            type: 'video',
-                            url: videoUrl.trim(),
-                            createdAt: post.created_at,
-                            postId: post.id,
-                            filename: videoUrl.split('/').pop()
-                        };
-                        if (isRecent) {
-                            recentMediaItems.push(mediaItem);
-                        } else {
-                            olderMediaItems.push(mediaItem);
-                        }
-                    }
-                });
-            } catch (e) {
-                console.error(`Error parsing videos for post ${post.id}:`, e, post.videos);
             }
-        }
-    });
+
+            // 🔹 Process videos (saved as [{ url, public_id }])
+            if (post.videos && post.videos !== '[]') {
+                try {
+                    const videos = JSON.parse(post.videos);
+                    if (Array.isArray(videos)) {
+                        videos.forEach(vidObj => {
+                            if (vidObj && vidObj.url) {
+                                const mediaItem = {
+                                    type: 'video',
+                                    url: vidObj.url, // ✅ Cloudinary URL
+                                    createdAt: post.created_at,
+                                    postId: post.id,
+                                    filename: vidObj.public_id || vidObj.url.split('/').pop()
+                                };
+                                if (isRecent) recentMediaItems.push(mediaItem);
+                                else olderMediaItems.push(mediaItem);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error(`Error parsing videos for post ${post.id}:`, e);
+                }
+            }
+        });
 
         console.log(`Processed ${recentMediaItems.length} recent and ${olderMediaItems.length} older media items`);
 
@@ -323,6 +311,7 @@ exports.getGallery = async (req, res) => {
         });
     }
 };
+
 
 
 // Helper function to format date like Facebook
