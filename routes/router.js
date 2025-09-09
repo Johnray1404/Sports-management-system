@@ -4,6 +4,7 @@ const coachController = require('../controllers/coachController');
 const adminController = require('../controllers/adminController');
 const router = express.Router();
 const { uploadFiles, upload } = require('../config/playerMulter');
+const { playerDocsUpload } = require('../config/cloudinary');
 const { check } = require('express-validator');
 const { authMiddleware, checkTermsAccepted } = require('../middleware/auth');
 const adminAuthMiddleware = require('../middleware/adminAuth');
@@ -13,6 +14,7 @@ const db = require('../config/db');
 const { adminPostUpload, coachRegisterUpload } = require('../config/cloudinary');
 const uploadProfile = require('../config/adminProfileMulter');
 const { combinedUpload } = require("../config/adminEventMulter");
+
 
  
 
@@ -43,17 +45,16 @@ router.get('/all-teams',  authMiddleware, checkTermsAccepted, userController.get
 router.get('/teams/:id',  authMiddleware, checkTermsAccepted, userController.getTeamDetails);
 router.get('/teams/:id/players',  authMiddleware, checkTermsAccepted, userController.getTeamPlayers);
 router.get('/player-register',  authMiddleware, checkTermsAccepted, userController.getPlayerRegister);
-router.post('/player-register',  authMiddleware, checkTermsAccepted, (req, res, next) => {
-    console.log("Form fields before multer:", req.body); 
-    next();
-},
-    uploadFiles,  
-    (req, res, next) => {
-        console.log("Form fields after multer:", req.body); 
-        console.log("Uploaded files:", req.files); 
-        next();
-},
-    userController.registerPlayer  
+router.post(
+  '/player-register',
+  authMiddleware,
+  checkTermsAccepted,
+  playerDocsUpload.fields([
+    { name: 'PSA', maxCount: 1 },
+    { name: 'waiver', maxCount: 1 },
+    { name: 'med_cert', maxCount: 1 },
+  ]),
+  userController.registerPlayer
 );
 router.get('/posts/mark-viewed/:id', async (req, res) => {
     const postId = req.params.id;
@@ -195,8 +196,6 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
-
-
 
 
 
