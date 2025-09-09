@@ -1,6 +1,6 @@
 <div class="team-details-header">
     <% if (team.teamProfile) { %>
-        <img src="/uploads/team_profiles/<%= team.teamProfile %>" class="team-details-profile" alt="<%= team.teamName %>">
+        <img src="<%= team.teamProfile %>" class="team-details-profile" alt="<%= team.teamName %>">
     <% } else { %>
         <div class="team-details-profile">
             <i class="fas fa-users"></i>
@@ -76,4 +76,5 @@
             </div>
         <% }); %>
     </div>
+
 </div>
