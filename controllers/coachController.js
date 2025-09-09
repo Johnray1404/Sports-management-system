@@ -1107,9 +1107,9 @@ exports.getCoachSportsMyPlayers = async (req, res) => {
         // 3. Format player data with profile picture and documents
         const playersWithProfile = players.map(player => {
             const documents = {
-                PSA: player.PSA ? `/${player.PSA}` : null,
-                waiver: player.waiver ? `/${player.waiver}` : null,
-                med_cert: player.med_cert ? `/${player.med_cert}` : null
+                PSA: player.PSA ? `${player.PSA}` : null,
+                waiver: player.waiver ? `${player.waiver}` : null,
+                med_cert: player.med_cert ? `${player.med_cert}` : null
             };
 
             return {
