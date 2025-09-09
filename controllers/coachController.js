@@ -15,6 +15,7 @@ const {
     getTeamStatusNotifications,
     getLatestCoachPostNotification
 } = require('../utils/notificationHelper');
+const { coachCertificateUpload } = require('../config/cloudinary');
 
 
 
@@ -27,23 +28,22 @@ exports.getCoachSignup = (req, res) => {
 };
 
 // Post signup
-exports.postCoachSignup = async (req, res) => {
-    coachUpload.single('coach_certificate')(req, res, async (err) => {
+exports.postCoachSignup = (req, res) => {
+    coachCertificateUpload.single('coach_certificate')(req, res, async (err) => {
         if (err) {
-            console.error("Multer Error:", err);
+            console.error("Cloudinary Upload Error:", err);
             return res.render('coach/coachSignup', {
                 messages: { error: 'File upload failed' },
-                old: req.body || {}  
+                old: req.body || {}
             });
         }
+
         if (!req.file) {
             return res.render('coach/coachSignup', {
                 messages: { error: 'No file uploaded. Please upload a coach certificate.' },
                 old: req.body || {}
             });
         }
-        console.log("Request Body:", req.body);
-        console.log("Uploaded File:", req.file);
 
         const { fullname, email, phone, password, confirm_password } = req.body;
         if (!fullname || !email || !phone || !password || !confirm_password) {
@@ -58,6 +58,7 @@ exports.postCoachSignup = async (req, res) => {
                 old: req.body || {}
             });
         }
+
         const emailExists = await coachModel.checkEmailExists(email);
         if (emailExists) {
             return res.render('coach/coachSignup', {
@@ -65,20 +66,23 @@ exports.postCoachSignup = async (req, res) => {
                 old: req.body || {}
             });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
+
         const coachData = {
             fullname,
             email,
             phone,
             password: hashedPassword,
-            coachCertificate: `uploads/coach_certificates/${req.file.filename}`,
+            // Store Cloudinary URL
+            coachCertificate: req.file.path,  
         };
-        console.log("Coach Data:", coachData);
+
         try {
             await coachModel.createCoach(coachData);
             res.render('coach/coachLogin', {
                 messages: { success: 'Coach successfully signed up!' },
-                old: req.body || {}  
+                old: {}
             });
         } catch (error) {
             console.error("Database Insertion Error:", error);
