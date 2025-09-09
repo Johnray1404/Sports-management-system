@@ -5,7 +5,6 @@ const User = require('../models/userModel');
 const { validationResult } = require('express-validator');
 const db = require('../config/db'); 
 const { PSAUpload, waiverUpload, medCertUpload  } = require('../config/multerConfig');
-const { upload } = require('../config/playerMulter');
 const { getLatestPostNotification,getTeamStatusNotification } = require('../utils/notificationHelper');
 const fs = require('fs');
 const path = require('path');
@@ -1283,5 +1282,6 @@ exports.uploadProfilePicture = async (req, res) => {
         res.sendStatus(500);
     }
 };
+
 
 
