@@ -16,6 +16,7 @@ const {
     getLatestCoachPostNotification
 } = require('../utils/notificationHelper');
 const { coachCertificateUpload } = require('../config/cloudinary');
+const { coachRegisterUpload } = require('../config/cloudinary');
 
 
 
@@ -705,11 +706,11 @@ exports.getCoachRegisterEvent = async (req, res) => {
 };
 
 
-//handle coach team registration
+// handle coach team registration
 exports.postCoachRegisterTeam = [
-  combinedUpload.fields([
+  coachRegisterUpload.fields([
     { name: 'teamProfile', maxCount: 1 },
-    { name: 'appointment_form', maxCount: 1 }
+    { name: 'appointment_form', maxCount: 1 },
   ]),
   async (req, res) => {
     try {
@@ -721,16 +722,15 @@ exports.postCoachRegisterTeam = [
       const coachId = req.session.coachOnly.id;
       const { teamName, position, organization } = req.body;
       const eventId = req.params.eventId;
-      const teamProfile = req.files.teamProfile[0].filename;
-      const appointmentForm = req.files.appointment_form[0].filename;
+
+      // Use secure_url from Cloudinary
+      const teamProfile = req.files.teamProfile[0].path;
+      const appointmentForm = req.files.appointment_form[0].path;
 
       // Update coach's position
-      await db.execute(
-        'UPDATE coach SET position = ? WHERE id = ?',
-        [position, coachId]
-      );
+      await db.execute('UPDATE coach SET position = ? WHERE id = ?', [position, coachId]);
 
-      // Check if coach already registered for this event
+      // Check if already registered
       const [existingTeam] = await db.execute(
         'SELECT * FROM team WHERE coach_id = ? AND event_id = ?',
         [coachId, eventId]
@@ -741,7 +741,7 @@ exports.postCoachRegisterTeam = [
         return res.redirect(`/coach/events`);
       }
 
-      // Insert the new team with appointment form
+      // Insert team registration
       await db.execute(
         'INSERT INTO team (teamName, teamProfile, appointment_form, organization, coach_id, event_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [teamName, teamProfile, appointmentForm, organization, coachId, eventId, 'pending']
@@ -754,7 +754,7 @@ exports.postCoachRegisterTeam = [
       req.flash('error', 'There was an error registering your team. Please try again.');
       res.redirect(`/coach/register/${req.params.eventId}`);
     }
-  }
+  },
 ];
 
 //get coachMyTeam
