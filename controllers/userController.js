@@ -1157,42 +1157,34 @@ exports.registerPlayer = async (req, res) => {
         const waiverFile = req.files.waiver[0];
         const medCertFile = req.files.med_cert[0];
 
-        const PSAPath = `uploads/player_PSA/${Date.now()}${path.extname(PSAFile.originalname)}`;
-        const waiverPath = `uploads/player_waiver/${Date.now()}${path.extname(waiverFile.originalname)}`;
-        const medCertPath = `uploads/player_medCert/${Date.now()}${path.extname(medCertFile.originalname)}`;
+        const PSAUrl = req.files.PSA[0].path;       // Cloudinary secure URL
+        const waiverUrl = req.files.waiver[0].path;
+        const medCertUrl = req.files.med_cert[0].path;
 
-        // Ensure upload directories exist
-        fs.mkdirSync('./public/uploads/player_PSA', { recursive: true });
-        fs.mkdirSync('./public/uploads/player_waiver', { recursive: true });
-        fs.mkdirSync('./public/uploads/player_medCert', { recursive: true });
-
-        fs.writeFileSync(`./public/${PSAPath}`, PSAFile.buffer);
-        fs.writeFileSync(`./public/${waiverPath}`, waiverFile.buffer);
-        fs.writeFileSync(`./public/${medCertPath}`, medCertFile.buffer);
 
         // Insert player with fields based on organization type
         await db.execute(`
-            INSERT INTO team_players 
-            (team_id, user_id, player_name, PSA, waiver, med_cert, 
-             birthdate, age, sex, sports, school, year_level, barangay, contact_number,
-             status, notification_viewed, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending", 0, NOW(), NOW())
-        `, [
-            team_id, 
-            userId, 
-            player_name, 
-            PSAPath, 
-            waiverPath, 
-            medCertPath,
-            birthdate, 
-            age, 
-            sex, 
-            sportsValue,
-            organizationType === 'school' ? school : null,
-            organizationType === 'school' ? year_level : null,
-            organizationType === 'barangay' ? barangay : null,
-            contact_no
-        ]);
+        INSERT INTO team_players 
+        (team_id, user_id, player_name, PSA, waiver, med_cert, 
+        birthdate, age, sex, sports, school, year_level, barangay, contact_number,
+        status, notification_viewed, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending", 0, NOW(), NOW())
+    `, [
+        team_id,
+        userId,
+        player_name,
+        PSAUrl,    // ✅ Cloudinary URL
+        waiverUrl, // ✅ Cloudinary URL
+        medCertUrl,// ✅ Cloudinary URL
+        birthdate,
+        age,
+        sex,
+        sportsValue,
+        organizationType === 'school' ? school : null,
+        organizationType === 'school' ? year_level : null,
+        organizationType === 'barangay' ? barangay : null,
+        contact_no
+    ]);
 
         req.flash('success', 'Player registered successfully!');
         res.redirect('/join-team');
