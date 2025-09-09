@@ -277,7 +277,7 @@
                     <% if (event.appointmentForm) { %>
                         <div class="file-preview">
                             <!-- ✅ Cloudinary PDF URL -->
-                            <a href="<%= event.appointmentForm %>" target="_blank">
+                            <a href="<%= event.appointmentForm %>" target="_blank" class="pdf-link">
                                 <i class="fas fa-file-pdf"></i> View Current PDF
                             </a>
                             <span class="current-file">Current: <%= event.appointmentForm %></span>
@@ -355,3 +355,4 @@
     </script>
 </body>
 </html>
+
