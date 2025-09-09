@@ -156,7 +156,8 @@
                     <% ongoingEvents.forEach(event => { %>
                         <a href="/admin/events/<%= event.id %>" class="event-link">
                             <div class="gallery-card">
-                                <img src="/uploads/events/<%= event.image %>" alt="<%= event.title %>">
+                                <!-- Use Cloudinary URL -->
+                                <img src="<%= event.image %>" alt="<%= event.title %>">
                                 <div class="card-content">
                                     <h4><%= event.title %></h4>
                                     <p><i class="fas fa-calendar-alt"></i> <%= event.date_schedule %></p>
@@ -178,7 +179,8 @@
                 <% if (Array.isArray(expiredEvents) && expiredEvents.length > 0) { %>
                     <% expiredEvents.forEach(event => { %>
                         <div class="gallery-card expired">
-                            <img src="/uploads/events/<%= event.image %>" alt="<%= event.title %>">
+                            <!-- Use Cloudinary URL -->
+                            <img src="<%= event.image %>" alt="<%= event.title %>">
                             <div class="card-content">
                                 <h4><%= event.title %></h4>
                                 <p><i class="fas fa-calendar-alt"></i> <%= event.date_schedule %></p>
