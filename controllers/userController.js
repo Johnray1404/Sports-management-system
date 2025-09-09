@@ -349,7 +349,7 @@ function formatTimeAgo(dateString) {
 };
 
 
-//Get Posts
+// Get Posts for Users
 exports.getPosts = async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
@@ -360,12 +360,13 @@ exports.getPosts = async (req, res) => {
     const userId = req.session.user.id;
 
     try {
-        // Get admin info with profile picture
+        // 1. Get admin info with profile picture
         const [[admin]] = await db.execute("SELECT id, name, profilePic FROM admins LIMIT 1");
-        
-        // Get all posts
+
+        // 2. Get all posts
         let [posts] = await db.execute("SELECT * FROM posts ORDER BY created_at DESC");
 
+        // 3. Initialize reactions data
         const postIds = posts.map(post => post.id);
         let reactionsData = {};
         posts.forEach(post => {
@@ -377,10 +378,11 @@ exports.getPosts = async (req, res) => {
             };
         });
 
+        // 4. Get reactions if there are posts
         if (postIds.length > 0) {
             const placeholders = postIds.map(() => '?').join(',');
 
-            // Get reaction counts for all posts
+            // Total reactions
             const [countResults] = await db.execute(`
                 SELECT 
                     post_id,
@@ -391,42 +393,58 @@ exports.getPosts = async (req, res) => {
                 GROUP BY post_id
             `, postIds);
 
-            countResults.forEach(reaction => {
-                reactionsData[reaction.post_id].likes = reaction.likes || 0;
-                reactionsData[reaction.post_id].dislikes = reaction.dislikes || 0;
+            countResults.forEach(r => {
+                reactionsData[r.post_id].likes = r.likes || 0;
+                reactionsData[r.post_id].dislikes = r.dislikes || 0;
             });
 
-            // Get user's reactions
+            // User’s reactions
             const [userReactions] = await db.execute(`
                 SELECT post_id, reaction_type 
                 FROM post_reactions 
                 WHERE post_id IN (${placeholders}) AND user_id = ?
             `, [...postIds, userId]);
 
-            userReactions.forEach(reaction => {
-                reactionsData[reaction.post_id].hasLiked = reaction.reaction_type === 'like';
-                reactionsData[reaction.post_id].hasDisliked = reaction.reaction_type === 'dislike';
+            userReactions.forEach(r => {
+                if (r.reaction_type === 'like') reactionsData[r.post_id].hasLiked = true;
+                if (r.reaction_type === 'dislike') reactionsData[r.post_id].hasDisliked = true;
             });
         }
 
-        // Format posts with reactions and media
+        // 5. Format posts with Cloudinary media + reactions
         posts = posts.map(post => {
-            const reactions = reactionsData[post.id];
+            let images = [];
+            let videos = [];
+
+            try {
+                images = post.images ? JSON.parse(post.images) : [];
+                videos = post.videos ? JSON.parse(post.videos) : [];
+            } catch (e) {
+                console.error(`Error parsing media for post ${post.id}:`, e);
+            }
+
             return {
                 ...post,
-                images: post.images ? JSON.parse(post.images) : [],
-                videos: post.videos ? JSON.parse(post.videos) : [],
-                likes: reactions.likes,
-                dislikes: reactions.dislikes,
-                hasLiked: reactions.hasLiked,
-                hasDisliked: reactions.hasDisliked
+                images: Array.isArray(images) ? images.map(img => ({
+                    url: img.url,
+                    public_id: img.public_id || null
+                })) : [],
+                videos: Array.isArray(videos) ? videos.map(vid => ({
+                    url: vid.url,
+                    public_id: vid.public_id || null
+                })) : [],
+                likes: reactionsData[post.id].likes,
+                dislikes: reactionsData[post.id].dislikes,
+                hasLiked: reactionsData[post.id].hasLiked,
+                hasDisliked: reactionsData[post.id].hasDisliked
             };
         });
 
+        // 6. Render posts
         res.render('user/posts', {
-            notifications: postNotifications, // send to EJS
+            notifications: postNotifications,
             user: req.session.user,
-            admin: admin || { name: 'Admin', profilePic: '' }, // Ensure default values
+            admin: admin || { name: 'Admin', profilePic: '' },
             posts,
             formatTimeAgo
         });
@@ -435,11 +453,12 @@ exports.getPosts = async (req, res) => {
         console.error("Error fetching posts:", err);
         res.render('user/posts', {
             user: req.session.user,
-            admin: { name: 'Admin', profilePic: '' }, // Ensure default values
+            admin: { name: 'Admin', profilePic: '' },
             posts: []
         });
     }
 };
+
 
 // React to Post (for users)
 exports.reactToPost = async (req, res) => {
