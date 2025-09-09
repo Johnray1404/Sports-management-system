@@ -4,7 +4,6 @@ const coachController = require('../controllers/coachController');
 const adminController = require('../controllers/adminController');
 const router = express.Router();
 const { uploadFiles, upload } = require('../config/playerMulter');
-const coachUpload = require('../config/multerConfig');
 const { check } = require('express-validator');
 const { authMiddleware, checkTermsAccepted } = require('../middleware/auth');
 const adminAuthMiddleware = require('../middleware/adminAuth');
@@ -196,6 +195,7 @@ router.get("/admin/registered-team", adminAuthMiddleware, adminController.getAdm
 
 
 module.exports = router;
+
 
 
 
