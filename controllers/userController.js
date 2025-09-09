@@ -37,7 +37,7 @@ exports.handleSignup = async (req, res) => {
         return res.render('user/signup', {
             messages: {
                 errors: errors.array(),
-                oldEmail: req.body.email || ""
+                email: req.body.email
             }
         });
     }
@@ -228,37 +228,34 @@ exports.getGallery = async (req, res) => {
 
         // Fetch all posts with media files, ordered by created_at (newest first)
         const [posts] = await db.execute(`
-            SELECT id, images, videos, created_at FROM posts 
+            SELECT id, images, videos, created_at 
+            FROM posts 
             WHERE (images IS NOT NULL AND images != '[]') 
                OR (videos IS NOT NULL AND videos != '[]')
             ORDER BY created_at DESC
         `);
 
-        // Process media files
         const recentMediaItems = [];
         const olderMediaItems = [];
-        
+
         posts.forEach(post => {
             const postDate = new Date(post.created_at);
             const isRecent = postDate >= tenDaysAgo;
 
-            // Process images if they exist and are not empty
+            // 🔹 Process images (Cloudinary URLs already stored in DB)
             if (post.images && post.images !== '[]') {
                 try {
                     const images = JSON.parse(post.images);
                     if (Array.isArray(images)) {
-                        images.forEach(image => {
-                            if (image && typeof image === 'string') {
-                                const trimmedImage = image.trim();
+                        images.forEach(imageUrl => {
+                            if (imageUrl && typeof imageUrl === 'string') {
                                 const mediaItem = {
                                     type: 'image',
-                                    url: `/uploads/adminPosts/${trimmedImage}`,
-                                    fullPath: path.join(__dirname, '../public/uploads/adminPosts', trimmedImage),
+                                    url: imageUrl, // ✅ Cloudinary URL directly
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: trimmedImage
+                                    filename: imageUrl.split('/').pop()
                                 };
-                                
                                 if (isRecent) {
                                     recentMediaItems.push(mediaItem);
                                 } else {
@@ -272,23 +269,20 @@ exports.getGallery = async (req, res) => {
                 }
             }
 
-            // Process videos if they exist and are not empty
+            // 🔹 Process videos (Cloudinary URLs already stored in DB)
             if (post.videos && post.videos !== '[]') {
                 try {
                     const videos = JSON.parse(post.videos);
                     if (Array.isArray(videos)) {
-                        videos.forEach(video => {
-                            if (video && typeof video === 'string') {
-                                const trimmedVideo = video.trim();
+                        videos.forEach(videoUrl => {
+                            if (videoUrl && typeof videoUrl === 'string') {
                                 const mediaItem = {
                                     type: 'video',
-                                    url: `/uploads/adminPosts/${trimmedVideo}`,
-                                    fullPath: path.join(__dirname, '../public/uploads/adminPosts', trimmedVideo),
+                                    url: videoUrl, // ✅ Cloudinary URL directly
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: trimmedVideo
+                                    filename: videoUrl.split('/').pop()
                                 };
-                                
                                 if (isRecent) {
                                     recentMediaItems.push(mediaItem);
                                 } else {
@@ -303,38 +297,25 @@ exports.getGallery = async (req, res) => {
             }
         });
 
-        // Verify file existence and permissions for all media items
-        const verifyMediaFiles = (items) => {
-            items.forEach(item => {
-                try {
-                    if (!fs.existsSync(item.fullPath)) {
-                        console.warn(`File not found: ${item.fullPath}`);
-                    } else {
-                        fs.access(item.fullPath, fs.constants.R_OK, (err) => {
-                            if (err) {
-                                console.warn(`No read access to file: ${item.fullPath}`);
-                            }
-                        });
-                    }
-                } catch (err) {
-                    console.warn(`Error checking file ${item.filename}:`, err);
-                }
-            });
-        };
+        console.log(`Processed ${recentMediaItems.length} recent and ${olderMediaItems.length} older media items`);
 
-        verifyMediaFiles(recentMediaItems);
-        verifyMediaFiles(olderMediaItems);
-
+        // ✅ Render gallery with Cloudinary URLs
         res.render('user/gallery', {
             user: req.session.user,
-            recentMediaItems: recentMediaItems,
-            olderMediaItems: olderMediaItems
+            recentMediaItems,
+            olderMediaItems
         });
     } catch (error) {
         console.error('Error fetching gallery:', error);
-        res.status(500).send('Error loading gallery');
+        res.status(500).render('user/gallery', {
+            user: req.session.user,
+            recentMediaItems: [],
+            olderMediaItems: [],
+            error: 'Error loading gallery'
+        });
     }
 };
+
 
 // Helper function to format date like Facebook
 function formatTimeAgo(dateString) {
@@ -1294,6 +1275,5 @@ exports.uploadProfilePicture = async (req, res) => {
         res.sendStatus(500);
     }
 };
-
 
 
