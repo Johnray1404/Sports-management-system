@@ -239,63 +239,71 @@ exports.getGallery = async (req, res) => {
         const olderMediaItems = [];
 
         posts.forEach(post => {
-            const postDate = new Date(post.created_at);
-            const isRecent = postDate >= tenDaysAgo;
+        const postDate = new Date(post.created_at);
+        const isRecent = postDate >= tenDaysAgo;
 
-            // 🔹 Process images (Cloudinary URLs already stored in DB)
-            if (post.images && post.images !== '[]') {
-                try {
-                    const images = JSON.parse(post.images);
-                    if (Array.isArray(images)) {
-                        images.forEach(imageUrl => {
-                            if (imageUrl && typeof imageUrl === 'string') {
-                                const mediaItem = {
-                                    type: 'image',
-                                    url: imageUrl, // ✅ Cloudinary URL directly
-                                    createdAt: post.created_at,
-                                    postId: post.id,
-                                    filename: imageUrl.split('/').pop()
-                                };
-                                if (isRecent) {
-                                    recentMediaItems.push(mediaItem);
-                                } else {
-                                    olderMediaItems.push(mediaItem);
-                                }
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.error(`Error parsing images for post ${post.id}:`, e);
+        // 🔹 Process images
+        if (post.images && post.images !== '[]') {
+            try {
+                let images = [];
+                if (post.images.startsWith('[')) {
+                    images = JSON.parse(post.images); // array of URLs
+                } else {
+                    images = [post.images]; // single URL stored as string
                 }
-            }
 
-            // 🔹 Process videos (Cloudinary URLs already stored in DB)
-            if (post.videos && post.videos !== '[]') {
-                try {
-                    const videos = JSON.parse(post.videos);
-                    if (Array.isArray(videos)) {
-                        videos.forEach(videoUrl => {
-                            if (videoUrl && typeof videoUrl === 'string') {
-                                const mediaItem = {
-                                    type: 'video',
-                                    url: videoUrl, // ✅ Cloudinary URL directly
-                                    createdAt: post.created_at,
-                                    postId: post.id,
-                                    filename: videoUrl.split('/').pop()
-                                };
-                                if (isRecent) {
-                                    recentMediaItems.push(mediaItem);
-                                } else {
-                                    olderMediaItems.push(mediaItem);
-                                }
-                            }
-                        });
+                images.forEach(imageUrl => {
+                    if (imageUrl && typeof imageUrl === 'string') {
+                        const mediaItem = {
+                            type: 'image',
+                            url: imageUrl.trim(),
+                            createdAt: post.created_at,
+                            postId: post.id,
+                            filename: imageUrl.split('/').pop()
+                        };
+                        if (isRecent) {
+                            recentMediaItems.push(mediaItem);
+                        } else {
+                            olderMediaItems.push(mediaItem);
+                        }
                     }
-                } catch (e) {
-                    console.error(`Error parsing videos for post ${post.id}:`, e);
-                }
+                });
+            } catch (e) {
+                console.error(`Error parsing images for post ${post.id}:`, e, post.images);
             }
-        });
+        }
+
+        // 🔹 Process videos
+        if (post.videos && post.videos !== '[]') {
+            try {
+                let videos = [];
+                if (post.videos.startsWith('[')) {
+                    videos = JSON.parse(post.videos);
+                } else {
+                    videos = [post.videos];
+                }
+
+                videos.forEach(videoUrl => {
+                    if (videoUrl && typeof videoUrl === 'string') {
+                        const mediaItem = {
+                            type: 'video',
+                            url: videoUrl.trim(),
+                            createdAt: post.created_at,
+                            postId: post.id,
+                            filename: videoUrl.split('/').pop()
+                        };
+                        if (isRecent) {
+                            recentMediaItems.push(mediaItem);
+                        } else {
+                            olderMediaItems.push(mediaItem);
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error(`Error parsing videos for post ${post.id}:`, e, post.videos);
+            }
+        }
+    });
 
         console.log(`Processed ${recentMediaItems.length} recent and ${olderMediaItems.length} older media items`);
 
