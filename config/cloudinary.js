@@ -93,9 +93,47 @@ const coachRegisterUpload = multer({
   limits: { fileSize: 20 * 1024 * 1024 },
 });
 
+/**
+ * Storage for Player Registration Documents (PSA, Waiver, Medical Certificate)
+ */
+const playerDocsStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const mime = file.mimetype || '';
+    let resource_type = 'image';
+    let folder = 'player_docs';
+
+    if (mime.startsWith('video/')) resource_type = 'video';
+    else if (mime.includes('pdf')) resource_type = 'raw';
+
+    // Different folders by fieldname
+    if (file.fieldname === 'PSA') {
+      folder = 'player_docs/PSA';
+    } else if (file.fieldname === 'waiver') {
+      folder = 'player_docs/waivers';
+    } else if (file.fieldname === 'med_cert') {
+      folder = 'player_docs/medical';
+    }
+
+    return {
+      folder,
+      resource_type,
+      public_id: `${file.fieldname}_${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
+    };
+  },
+});
+
+// 🔹 Multer middleware for PSA, Waiver, Med Cert
+const playerDocsUpload = multer({
+  storage: playerDocsStorage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB limit
+});
+
+
 module.exports = {
   cloudinary,
   adminPostUpload,
   coachCertificateUpload,
   coachRegisterUpload,
+   playerDocsUpload,
 };
