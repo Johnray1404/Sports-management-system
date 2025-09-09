@@ -7,12 +7,12 @@ const multer = require('multer');
 // 🔹 Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 /**
- * Default storage for general admin uploads (images, videos, pdfs)
+ * Default storage for admin posts (images, videos, pdfs)
  */
 const storage = new CloudinaryStorage({
   cloudinary,
@@ -27,17 +27,17 @@ const storage = new CloudinaryStorage({
       resource_type,
       public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
     };
-  }
+  },
 });
 
-// 🔹 Multer middleware for admin uploads
+// 🔹 Admin upload middleware
 const adminPostUpload = multer({
   storage,
-  limits: { fileSize: 200 * 1024 * 1024 } // 200 MB max
+  limits: { fileSize: 200 * 1024 * 1024 },
 });
 
 /**
- * Separate storage for Coach Certificates (jpg, png, pdf allowed)
+ * Storage for Coach Certificates (jpg, png, pdf allowed)
  */
 const coachCertificateStorage = new CloudinaryStorage({
   cloudinary,
@@ -52,13 +52,50 @@ const coachCertificateStorage = new CloudinaryStorage({
       resource_type,
       public_id: `coach_${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
     };
-  }
+  },
 });
 
-// 🔹 Multer middleware for coach certificates
+// 🔹 Coach certificates upload middleware
 const coachCertificateUpload = multer({
   storage: coachCertificateStorage,
-  limits: { fileSize: 20 * 1024 * 1024 } // 20 MB max
+  limits: { fileSize: 20 * 1024 * 1024 },
 });
 
-module.exports = { cloudinary, adminPostUpload, coachCertificateUpload };
+/**
+ * Storage for Coach Event Registration (Team Profile + Appointment Form)
+ */
+const coachRegisterStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const mime = file.mimetype || '';
+    let folder = 'coach_register';
+    let resource_type = 'image';
+
+    if (file.fieldname === 'appointment_form') {
+      resource_type = 'raw'; // PDF
+      folder = 'coach_register/appointment_forms';
+    } else if (file.fieldname === 'teamProfile') {
+      resource_type = 'image';
+      folder = 'coach_register/team_profiles';
+    }
+
+    return {
+      folder,
+      resource_type,
+      public_id: `${file.fieldname}_${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
+    };
+  },
+});
+
+// 🔹 Upload middleware for teamProfile & appointment_form
+const coachRegisterUpload = multer({
+  storage: coachRegisterStorage,
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+module.exports = {
+  cloudinary,
+  adminPostUpload,
+  coachCertificateUpload,
+  coachRegisterUpload,
+};
