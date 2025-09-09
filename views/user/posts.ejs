@@ -147,19 +147,21 @@
                             %>
 
                             <% if (mediaCount === 1) { %>
-                                <div class="media-grid">
-                                    <% if (allMedia[0].type === 'image') { %>
-                                        <img src="<%= media.src %>"
-                                            onclick="openLightbox(event, '<%= allMedia[0].src %>', 'image', 0, <%= mediaCount %>)">
-                                    <% } else { %>
-                                        <div class="video-wrapper">
-                                            <video controls class="single-media media-item">
-                                                <source src="<%= media.src %>" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        </div>
-                                    <% } %>
-                                </div>
+                            <div class="media-grid">
+                                <% if (allMedia[0].type === 'image') { %>
+                                    <img src="<%= allMedia[0].src %>"
+                                        class="single-media media-item"
+                                        onclick="openLightbox(event, '<%= allMedia[0].src %>', 'image', 0, <%= mediaCount %>)">
+                                <% } else { %>
+                                    <div class="video-wrapper">
+                                        <video controls class="single-media media-item">
+                                            <source src="<%= allMedia[0].src %>" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                <% } %>
+                            </div>
+
                             <% } else if (mediaCount === 2) { %>
                                 <div class="media-grid grid-2">
                                     <% allMedia.forEach((media, index) => { %>
