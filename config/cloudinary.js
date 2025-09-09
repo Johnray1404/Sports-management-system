@@ -129,6 +129,30 @@ const playerDocsUpload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB limit
 });
 
+/**
+ * Storage for User Profile Pictures
+ */
+const userProfileStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const mime = file.mimetype || '';
+    let resource_type = 'image';
+
+    return {
+      folder: 'user_profiles',
+      resource_type,
+      public_id: `profile_${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
+    };
+  },
+});
+
+// 🔹 Multer middleware for user profile uploads
+const userProfileUpload = multer({
+  storage: userProfileStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+});
+
+
 
 module.exports = {
   cloudinary,
@@ -136,4 +160,5 @@ module.exports = {
   coachCertificateUpload,
   coachRegisterUpload,
    playerDocsUpload,
+  userProfileUpload,
 };
