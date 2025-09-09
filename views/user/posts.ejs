@@ -180,12 +180,12 @@
                                 <div class="media-grid grid-3">
                                     <% allMedia.forEach((media, index) => { %>
                                         <% if (media.type === 'image') { %>
-                                            <img src="/uploads/adminPosts/<%= media.src %>" class="media-item" 
+                                            <img src="<%= media.src %>" 
                                                 onclick="openLightbox(event, '<%= media.src %>', 'image', <%= index %>, <%= mediaCount %>)">
                                         <% } else { %>
                                             <div class="video-wrapper">
                                                 <video controls class="media-item">
-                                                    <source src="/uploads/adminPosts/<%= media.src %>" type="video/mp4">
+                                                    <source src="<%= media.src %>" type="video/mp4">
                                                     Your browser does not support the video tag.
                                                 </video>
                                             </div>
@@ -197,12 +197,12 @@
                                     <% allMedia.slice(0, 4).forEach((media, index) => { %>
                                         <div style="position: relative;">
                                             <% if (media.type === 'image') { %>
-                                                <img src="/uploads/adminPosts/<%= media.src %>" class="media-item" 
+                                                <img src="<%= media.src %>" 
                                                     onclick="openLightbox(event, '<%= media.src %>', 'image', <%= index %>, <%= mediaCount %>)">
                                             <% } else { %>
                                                 <div class="video-wrapper">
                                                     <video controls class="media-item">
-                                                        <source src="/uploads/adminPosts/<%= media.src %>" type="video/mp4">
+                                                        <source src="<%= media.src %>" type="video/mp4">
                                                         Your browser does not support the video tag.
                                                     </video>
                                                 </div>
