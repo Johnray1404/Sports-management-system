@@ -1267,11 +1267,11 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.redirect('/profile');
     }
 
-    const profilePath = '/uploads/user_profiles/' + req.file.filename;
+    const profileUrl = req.file.path;
 
     try {
         // Update DB
-        await db.execute("UPDATE users SET profile = ? WHERE id = ?", [profilePath, user.id]);
+        await db.execute("UPDATE users SET profile = ? WHERE id = ?", [profileUrl, user.id]);
 
         // Refresh user data in session
         const [[updatedUser]] = await db.execute("SELECT * FROM users WHERE id = ?", [user.id]);
