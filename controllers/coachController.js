@@ -480,19 +480,20 @@ exports.reactToPost = async (req, res) => {
 // Get Gallery for Coach
 exports.getCoachGallery = async (req, res) => {
     try {
-        const coach = await coachModel.findCoachById(req.session.coachOnly.id);
-        
         if (!req.session.coachOnly) {
             return res.redirect('/coach/login');
         }
+
+        const coach = await coachModel.findCoachById(req.session.coachOnly.id);
 
         // Calculate date 10 days ago
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
-        // Fetch all posts with media files, ordered by created_at (newest first)
+        // Fetch all posts with media files
         const [posts] = await db.execute(`
-            SELECT id, images, videos, created_at FROM posts 
+            SELECT id, images, videos, created_at 
+            FROM posts 
             WHERE (images IS NOT NULL AND images != '[]') 
                OR (videos IS NOT NULL AND videos != '[]')
             ORDER BY created_at DESC
@@ -500,31 +501,27 @@ exports.getCoachGallery = async (req, res) => {
 
         console.log(`Found ${posts.length} posts with potential media`);
 
-        // Process media files
         const recentMediaItems = [];
         const olderMediaItems = [];
-        
+
         posts.forEach(post => {
             const postDate = new Date(post.created_at);
             const isRecent = postDate >= tenDaysAgo;
 
-            // Process images if they exist and are not empty
+            // 🔹 Process images (Cloudinary URLs already stored in DB)
             if (post.images && post.images !== '[]') {
                 try {
                     const images = JSON.parse(post.images);
                     if (Array.isArray(images)) {
-                        images.forEach(image => {
-                            if (image && typeof image === 'string') {
-                                const trimmedImage = image.trim();
+                        images.forEach(imageUrl => {
+                            if (imageUrl && typeof imageUrl === 'string') {
                                 const mediaItem = {
                                     type: 'image',
-                                    url: `/uploads/adminPosts/${trimmedImage}`,
-                                    fullPath: path.join(__dirname, '../public/uploads/adminPosts', trimmedImage),
+                                    url: imageUrl, // ✅ Cloudinary URL
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: trimmedImage
+                                    filename: imageUrl.split('/').pop() // last part of URL
                                 };
-                                
                                 if (isRecent) {
                                     recentMediaItems.push(mediaItem);
                                 } else {
@@ -538,23 +535,20 @@ exports.getCoachGallery = async (req, res) => {
                 }
             }
 
-            // Process videos if they exist and are not empty
+            // 🔹 Process videos (Cloudinary URLs already stored in DB)
             if (post.videos && post.videos !== '[]') {
                 try {
                     const videos = JSON.parse(post.videos);
                     if (Array.isArray(videos)) {
-                        videos.forEach(video => {
-                            if (video && typeof video === 'string') {
-                                const trimmedVideo = video.trim();
+                        videos.forEach(videoUrl => {
+                            if (videoUrl && typeof videoUrl === 'string') {
                                 const mediaItem = {
                                     type: 'video',
-                                    url: `/uploads/adminPosts/${trimmedVideo}`,
-                                    fullPath: path.join(__dirname, '../public/uploads/adminPosts', trimmedVideo),
+                                    url: videoUrl, // ✅ Cloudinary URL
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: trimmedVideo
+                                    filename: videoUrl.split('/').pop()
                                 };
-                                
                                 if (isRecent) {
                                     recentMediaItems.push(mediaItem);
                                 } else {
@@ -571,33 +565,12 @@ exports.getCoachGallery = async (req, res) => {
 
         console.log(`Processed ${recentMediaItems.length} recent and ${olderMediaItems.length} older media items`);
 
-        // Verify file existence and permissions
-        const verifyMediaFiles = (items) => {
-            items.forEach(item => {
-                try {
-                    if (!fs.existsSync(item.fullPath)) {
-                        console.warn(`File not found: ${item.fullPath}`);
-                    } else {
-                        fs.access(item.fullPath, fs.constants.R_OK, (err) => {
-                            if (err) {
-                                console.warn(`No read access to file: ${item.fullPath}`);
-                            }
-                        });
-                    }
-                } catch (err) {
-                    console.warn(`Error checking file ${item.filename}:`, err);
-                }
-            });
-        };
-
-        verifyMediaFiles(recentMediaItems);
-        verifyMediaFiles(olderMediaItems);
-
+        // ✅ Render gallery
         res.render('coach/coachGallery', {
             coach: req.session.coachOnly,
             coachProfile: coach.coachProfile,
-            recentMediaItems: recentMediaItems,
-            olderMediaItems: olderMediaItems
+            recentMediaItems,
+            olderMediaItems
         });
 
     } catch (error) {
@@ -610,6 +583,7 @@ exports.getCoachGallery = async (req, res) => {
         });
     }
 };
+
 
 
 // Coach Controller
