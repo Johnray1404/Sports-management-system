@@ -18,7 +18,7 @@ const uploadProfile = require('../config/adminProfileMulter');
 const { combinedUpload } = require("../config/adminEventMulter");
 
 
- 
+
 
 
 
@@ -32,7 +32,13 @@ router.get('/gallery',  authMiddleware, checkTermsAccepted, userController.getGa
 router.get('/posts',  authMiddleware, checkTermsAccepted, userController.getPosts);
 router.post('/posts/:postId/react/:reactionType', userController.reactToPost);
 router.get('/profile',  authMiddleware, checkTermsAccepted, userController.getProfile);
-router.post('/profile/upload',  authMiddleware, checkTermsAccepted, upload.single('profile'), userController.uploadProfilePicture);
+router.post(
+  '/profile/upload',
+  authMiddleware,
+  checkTermsAccepted,
+  userProfileUpload.single('profile'),   // ✅ Cloudinary upload
+  userController.uploadProfilePicture
+);
 router.get('/login', userController.loginPage);
 router.post('/login', userController.handleLogin);
 router.get('/signup', userController.signupPage);
