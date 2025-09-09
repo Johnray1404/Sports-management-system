@@ -508,25 +508,22 @@ exports.getCoachGallery = async (req, res) => {
             const postDate = new Date(post.created_at);
             const isRecent = postDate >= tenDaysAgo;
 
-            // 🔹 Process images (Cloudinary URLs already stored in DB)
+            // 🔹 Process images (saved as [{ url, public_id }])
             if (post.images && post.images !== '[]') {
                 try {
                     const images = JSON.parse(post.images);
                     if (Array.isArray(images)) {
-                        images.forEach(imageUrl => {
-                            if (imageUrl && typeof imageUrl === 'string') {
+                        images.forEach(imgObj => {
+                            if (imgObj && imgObj.url) {
                                 const mediaItem = {
                                     type: 'image',
-                                    url: imageUrl, // ✅ Cloudinary URL
+                                    url: imgObj.url, // ✅ Cloudinary URL
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: imageUrl.split('/').pop() // last part of URL
+                                    filename: imgObj.public_id || imgObj.url.split('/').pop()
                                 };
-                                if (isRecent) {
-                                    recentMediaItems.push(mediaItem);
-                                } else {
-                                    olderMediaItems.push(mediaItem);
-                                }
+                                if (isRecent) recentMediaItems.push(mediaItem);
+                                else olderMediaItems.push(mediaItem);
                             }
                         });
                     }
@@ -535,25 +532,22 @@ exports.getCoachGallery = async (req, res) => {
                 }
             }
 
-            // 🔹 Process videos (Cloudinary URLs already stored in DB)
+            // 🔹 Process videos (saved as [{ url, public_id }])
             if (post.videos && post.videos !== '[]') {
                 try {
                     const videos = JSON.parse(post.videos);
                     if (Array.isArray(videos)) {
-                        videos.forEach(videoUrl => {
-                            if (videoUrl && typeof videoUrl === 'string') {
+                        videos.forEach(vidObj => {
+                            if (vidObj && vidObj.url) {
                                 const mediaItem = {
                                     type: 'video',
-                                    url: videoUrl, // ✅ Cloudinary URL
+                                    url: vidObj.url, // ✅ Cloudinary URL
                                     createdAt: post.created_at,
                                     postId: post.id,
-                                    filename: videoUrl.split('/').pop()
+                                    filename: vidObj.public_id || vidObj.url.split('/').pop()
                                 };
-                                if (isRecent) {
-                                    recentMediaItems.push(mediaItem);
-                                } else {
-                                    olderMediaItems.push(mediaItem);
-                                }
+                                if (isRecent) recentMediaItems.push(mediaItem);
+                                else olderMediaItems.push(mediaItem);
                             }
                         });
                     }
@@ -583,6 +577,7 @@ exports.getCoachGallery = async (req, res) => {
         });
     }
 };
+
 
 
 
