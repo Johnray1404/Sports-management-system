@@ -66,7 +66,7 @@
                 <% teams.forEach(team => { %>
                     <div class="team-item" onclick="showTeamDetails('<%= team.team_id %>')">
                         <% if (team.teamProfile) { %>
-                            <img src="/uploads/team_profiles/<%= team.teamProfile %>" class="team-profile-img" alt="<%= team.teamName %>">
+                            <img src="<%= team.teamProfile %>" class="team-profile-img" alt="<%= team.teamName %>">
                         <% } else { %>
                             <div class="team-profile-img">
                                 <i class="fas fa-users"></i>
@@ -222,4 +222,5 @@
     }
     </script>
 </body>
+
 </html>
