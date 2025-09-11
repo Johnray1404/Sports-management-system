@@ -67,7 +67,7 @@
                     <div class="organization-item">
                         <div class="organization-logo">
                             <% if (org.teamProfile) { %>
-                                <img src="/uploads/team_profiles/<%= org.teamProfile %>" alt="<%= org.organizationName %>">
+                                <img src="<%= org.teamProfile %>" alt="<%= org.organizationName %>">
                             <% } else { %>
                                 <i class="fas fa-landmark"></i>
                             <% } %>
@@ -325,4 +325,5 @@
         });
     </script>
 </body>
+
 </html>
