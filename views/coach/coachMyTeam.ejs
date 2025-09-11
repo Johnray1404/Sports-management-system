@@ -137,7 +137,7 @@
                                 <h3 class="section-title"><i class="fas fa-calendar-check"></i> Event Details</h3>
                                 <% if (team.event_image) { %>
                                     <div class="event-image-container">
-                                        <img src=",<%= team.event_image %>" alt="<%= team.event_title %>" class="event-image">
+                                        <img src="<%= team.event_image %>" alt="<%= team.event_title %>" class="event-image">
                                     </div>
                                 <% } %>
                                 <h4 class="event-title"><%= team.event_title %></h4>
@@ -395,3 +395,4 @@
 </body>
 
 </html>
+
