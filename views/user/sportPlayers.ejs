@@ -15,7 +15,7 @@
             <div class="players-header">
                 <div class="team-logo">
                     <% if (team.teamProfile) { %>
-                        <img src="/uploads/team_profiles/<%= team.teamProfile %>" alt="<%= team.teamName %>">
+                        <img src="<%= team.teamProfile %>" alt="<%= team.teamName %>">
                     <% } else { %>
                         <i class="fas fa-users"></i>
                     <% } %>
@@ -170,4 +170,5 @@
         }
     </script>
 </body>
+
 </html>
