@@ -764,7 +764,7 @@
                         <td><%= coach.phone %></td>
                         <td>
                             <% if (coach.coach_certificate) { %>
-                            <a href="/<%= coach.coach_certificate %>" target="_blank" class="certificate-link">
+                            <a href="<%= coach.coach_certificate %>" target="_blank" class="certificate-link">
                                 <i class="fas fa-eye"></i> View Certificate
                             </a>
                             <% } else { %>
@@ -881,3 +881,4 @@
     </script>
 </body>
 </html>
+
