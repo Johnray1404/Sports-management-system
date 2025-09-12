@@ -1069,7 +1069,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
             return {
                 ...team,
                 created_at: formatDate(team.created_at),
-                teamProfile: team.teamProfile ? `/uploads/team_profiles/${team.teamProfile}` : null,
+                teamProfile: team.teamProfile ? `${team.teamProfile}` : null,
                 event_title: team.event_title || 'No event'
             };
         });
@@ -1092,6 +1092,7 @@ exports.getAdminRegisteredTeam = async (req, res) => {
         });
     }
 };
+
 
 
 
