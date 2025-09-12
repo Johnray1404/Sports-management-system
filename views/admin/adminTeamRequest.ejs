@@ -742,7 +742,7 @@
                                 <td>
                                     <div class="org-info">
                                         <% if (team.teamProfile) { %>
-                                            <img src="/uploads/team_profiles/<%= team.teamProfile %>" alt="<%= team.teamName %> Logo" class="org-logo">
+                                            <img src="<%= team.teamProfile %>" alt="<%= team.teamName %> Logo" class="org-logo">
                                         <% } else { %>
                                             <div class="org-logo" style="background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-building" style="color: #6c757d;"></i>
@@ -772,7 +772,7 @@
                                 </td>
                                 <td>
                                     <% if (team.appointment_form) { %>
-                                        <a href="/uploads/appointment_form/<%= team.appointment_form %>" target="_blank" class="document-link">
+                                        <a href="<%= team.appointment_form %>" target="_blank" class="document-link">
                                             <i class="fas fa-file-pdf"></i> View Document
                                         </a>
                                     <% } else { %>
@@ -874,4 +874,5 @@
         });
     </script>
 </body>
+
 </html>
