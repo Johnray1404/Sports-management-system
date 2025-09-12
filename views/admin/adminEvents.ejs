@@ -68,7 +68,7 @@
                 <% events.forEach(event => { %>
                     <li class="event-item">
                         <a href="/admin/events/<%= event.id %>" class="event-link">
-                            <img src="/uploads/events/<%= event.image %>" alt="<%= event.title %>" class="event-image">
+                            <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
                             <div class="event-details">
                                 <div>
                                     <div class="event-header">
@@ -204,4 +204,5 @@
         });
     </script>
 </body>
+
 </html>
