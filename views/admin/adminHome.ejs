@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
-
+    /* Additional styles if needed */
 </style>
 </head>
 <body>
@@ -53,9 +53,9 @@
                 <% if (admin && admin.profilePic) { %>
                     <img src="<%= admin.profilePic %>" 
                         alt="Admin Profile" 
-                        style="width: 35px; height: 35px; border-radius: 50%; border: 2px solid #007bff; object-fit: cover;">
+                        style="width: 35px; height: 35px; border-radius: 50%; border: 2px solid #007bff; object-fit: cover; cursor: pointer;">
                 <% } else { %>
-                    <i class="fas fa-user-shield" style="font-size: 22px; color: white;"></i>
+                    <i class="fas fa-user-shield" style="font-size: 22px; color: white; cursor: pointer;"></i>
                 <% } %>
                 <div class="dropdown-content" id="adminDropdownMenu" style="display: none;">
                     <a href="/admin/adminProfile">
@@ -70,29 +70,29 @@
     </header>
     
     <!-- Notification Dropdown Box -->
-                <div id="notificationDropdown" style="display: none; position: absolute; right: 0; top: 30px; background: #fff; width: 320px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000; overflow: hidden;">
-                    <div style="padding: 15px;">
-                        <h4 style="margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Notifications</h4>
-                        <% if ((newCoachRequests && newCoachRequests.length > 0) || (newTeamRequests && newTeamRequests.length > 0)) { %>
-                            <% newCoachRequests.forEach((coach, index) => { %>
-                                <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
-                                    <a href="/admin/coach" style="color: #141010; text-decoration: none; font-size: 14px; display: block;">
-                                        🔔 New Coordinator Account Request from <strong><%= coach.fullname %></strong>
-                                    </a>
-                                </div>
-                            <% }); %>
-                            <% newTeamRequests.forEach((team, index) => { %>
-                                <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
-                                    <a href="/admin/team-request" style="color: #141010; text-decoration: none; font-size: 14px; display: block;">
-                                        ⚽ New Team Request: <strong><%= team.teamName %></strong>
-                                    </a>
-                                </div>
-                            <% }); %>
-                        <% } else { %>
-                            <p style="font-size: 14px; color: #999; margin: 10px 0;">No new notifications.</p>
-                        <% } %>
+    <div id="notificationDropdown" style="display: none; position: absolute; right: 0; top: 30px; background: #fff; width: 320px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000; overflow: hidden;">
+        <div style="padding: 15px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Notifications</h4>
+            <% if ((newCoachRequests && newCoachRequests.length > 0) || (newTeamRequests && newTeamRequests.length > 0)) { %>
+                <% newCoachRequests.forEach((coach, index) => { %>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <a href="/admin/coach" style="color: #141010; text-decoration: none; font-size: 14px; display: block;">
+                                            🔔 New Coordinator Account Request from <strong><%= coach.fullname %></strong>
+                        </a>
                     </div>
-                </div>
+                <% }); %>
+                <% newTeamRequests.forEach((team, index) => { %>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <a href="/admin/team-request" style="color: #141010; text-decoration: none; font-size: 14px; display: block;">
+                                            ⚽ New Team Request: <strong><%= team.teamName %></strong>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p style="font-size: 14px; color: #999; margin: 10px 0;">No new notifications.</p>
+            <% } %>
+        </div>
+    </div>
                 
     <main class="dashboard-container">
         <% if (success) { %>
@@ -147,7 +147,7 @@
     </main>
 
     <!-- Modal for logout confirmation -->
-     <div id="logoutModal" class="modal">
+    <div id="logoutModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="hideLogoutModal()">&times;</button>
             <h3>Are you sure you want to log out?</h3>
@@ -156,6 +156,7 @@
                 <button id="cancelLogout" class="cancel-btn">Cancel</button>
             </div>
         </div>
+    </div>
     
     <script>
         let isSidebarOpen = false;
@@ -232,22 +233,37 @@
         window.addEventListener('click', function(event) {
             const dropdown = document.getElementById('notificationDropdown');
             const bell = document.querySelector('.fa-bell');
-
-            if (!dropdown.contains(event.target) && !bell.contains(event.target)) {
+            
+            // Close notification dropdown if clicked outside
+            if (dropdown && !dropdown.contains(event.target) && !bell.contains(event.target)) {
                 dropdown.style.display = 'none';
+            }
+            
+            // Close admin dropdown if clicked outside
+            const adminProfileContainer = document.getElementById('adminProfileContainer');
+            const adminDropdownMenu = document.getElementById('adminDropdownMenu');
+            
+            if (adminProfileContainer && adminDropdownMenu && 
+                !adminProfileContainer.contains(event.target) && 
+                adminDropdownMenu.style.display === 'block') {
+                adminDropdownMenu.style.display = 'none';
             }
         });
         
-        //admin profile dropdown
+        //admin profile dropdown - Fixed for desktop
         document.addEventListener('DOMContentLoaded', () => {
             const profileContainer = document.getElementById('adminProfileContainer');
             const dropdownMenu = document.getElementById('adminDropdownMenu');
-            let hideTimeout;
-
+            
             profileContainer.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        });
+                e.stopPropagation();
+                // Toggle dropdown display
+                if (dropdownMenu.style.display === 'block') {
+                    dropdownMenu.style.display = 'none';
+                } else {
+                    dropdownMenu.style.display = 'block';
+                }
+            });
         });
     </script>
 </body>
