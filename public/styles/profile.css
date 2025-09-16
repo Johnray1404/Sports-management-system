@@ -23,6 +23,8 @@ body {
     padding: 40px;
     position: relative;
     overflow: hidden;
+    /* Added transition for smooth height changes */
+    transition: all 0.3s ease;
 }
 
 .profile-container::before {
@@ -101,6 +103,12 @@ h1 i {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     margin-top: 40px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+    font-size: 60px;
 }
 
 .profile-image {
@@ -187,14 +195,24 @@ h1 i {
     margin: 20px 0;
 }
 
-/* Responsive Design */
+/* Enhanced Responsive Design */
 @media (max-width: 768px) {
+    body {
+        padding: 0;
+        display: block;
+    }
+
     .profile-container {
+        border-radius: 0;
+        min-height: 100vh;
         padding: 30px 20px;
+        max-width: none;
+        box-shadow: none;
     }
 
     .profile-container::before {
         height: 120px;
+        border-radius: 0;
     }
 
     h1 {
@@ -208,6 +226,12 @@ h1 i {
 
     .user-details {
         padding: 20px;
+    }
+
+    /* Ensure content fills available space */
+    .profile-content {
+        min-height: calc(100vh - 200px);
+        justify-content: space-around;
     }
 }
 
@@ -232,6 +256,7 @@ h1 i {
     .profile-image-container {
         width: 130px;
         height: 130px;
+        font-size: 50px;
     }
 
     .upload-form input[type="file"] {
@@ -245,5 +270,93 @@ h1 i {
     .back-button {
         top: 20px;
         left: 20px;
+    }
+
+    /* Adjust spacing for very small screens */
+    .profile-content {
+        min-height: calc(100vh - 150px);
+    }
+
+    .upload-form {
+        margin: 15px 0;
+    }
+}
+
+/* Special UI for very small devices (max-width: 380px) */
+@media (max-width: 380px) {
+    .profile-container {
+        padding: 20px 12px;
+    }
+
+    .profile-container::before {
+        height: 90px;
+    }
+
+    h1 {
+        font-size: 18px;
+        margin: 5px 0 25px;
+    }
+
+    h1 i {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .back-button {
+        top: 15px;
+        left: 15px;
+        font-size: 18px;
+    }
+
+    .alert-success {
+        padding: 10px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .profile-image-container {
+        width: 110px;
+        height: 110px;
+        margin-top: 20px;
+        font-size: 40px;
+        border-width: 4px;
+    }
+
+    .upload-form {
+        margin: 15px 0;
+    }
+
+    .upload-form input[type="file"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .upload-form button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .user-details {
+        padding: 20px 15px;
+        margin-top: 15px;
+    }
+
+    .user-details h3 {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .user-details h3 i {
+        font-size: 16px;
+        margin-right: 10px;
+        width: 20px;
+    }
+
+    .divider {
+        margin: 15px 0;
+    }
+
+    .profile-content {
+        min-height: calc(100vh - 130px);
     }
 }
