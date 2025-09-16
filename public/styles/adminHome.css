@@ -25,15 +25,15 @@ body {
     align-items: center;
 }
 
-
 .header {
     background-color: #8B0039;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 3px 30px;
-    /* Adjusted padding to reduce navbar height */
     width: 100%;
+    position: relative;
+    z-index: 100;
 }
 
 .header .logo {
@@ -46,10 +46,8 @@ body {
 
 .header .logo img {
     width: 60px;
-    /* Reduced size to decrease navbar height */
     height: auto;
     border-radius: 50%;
-    /* Making it a circular logo */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -61,14 +59,10 @@ body {
 
 .slams-title {
     font-size: 24px;
-    /* Increase size */
     font-weight: bold;
     font-family: 'Poppins', sans-serif;
-    /* Rounded font */
     color: #FFD700;
-    /* Same color as sign-up button */
     letter-spacing: 1px;
-    /* Slightly space out letters for better look */
 }
 
 .nav a {
@@ -76,7 +70,6 @@ body {
     font-weight: bold;
     color: #fff;
     padding: 8px 16px;
-    /* Reduced padding to further adjust navbar height */
     border-radius: 20px;
     transition: background-color 0.3s ease-in-out;
 }
@@ -288,7 +281,7 @@ body {
     height: 100%;
 }
 
-/* Dropdown Content */
+/* Dropdown Content - Fixed for desktop */
 .dropdown-content {
     position: absolute;
     right: 0;
@@ -301,16 +294,11 @@ body {
     padding: 15px;
     z-index: 104;
     border: 1px solid #ffcc00;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: none;
 }
 
-.user-profile:hover .dropdown-content {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
+.dropdown-content.show {
+    display: block;
 }
 
 .dropdown-content a {
@@ -350,7 +338,7 @@ body {
     background-color: #E64A19;
 }
 
-/* Notification Dropdown - Updated to match reference style */
+/* Notification Dropdown */
 .notification-wrapper {
     position: relative;
     display: inline-block;
