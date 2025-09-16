@@ -4,164 +4,681 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Events - SLAMS</title>
-    <link rel="stylesheet" href="/styles/frontpage.css">
+    <link rel="stylesheet" href="/styles/adminhome.css">
     <link rel="stylesheet" href="/styles/adminDashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #4A90E2;  /* Light blue */
-            --secondary-color: #FFFFFF; /* White */
-            --accent-color: #3A7BC8;   /* Darker blue */
-            --text-color: #333333;
-            --light-gray: #F5F5F5;
-        }
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            background-color: var(--light-gray);
-            color: var(--text-color);
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    background: linear-gradient(135deg, #ffffff, #c6d6d8);
+    line-height: 1.6;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-        .create-event-form {
-            background-color: var(--secondary-color);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 700px;
-            margin: 0 auto;
-        }
+.container {
+    max-width: 1200px;
+    padding: 0 20px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .create-event-form h2 {
-            margin-bottom: 25px;
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            text-align: center;
-        }
+.header {
+    background-color: #8B0039;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 30px;
+    width: 100%;
+}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.header .logo {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    font-family: 'Playfair Display', serif;
+    gap: 12px;
+}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: var(--primary-color);
-            font-weight: 600;
-        }
+.header .logo img {
+    width: 60px;
+    height: auto;
+    max-width: 100%;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-        .form-group input, 
-        .form-group textarea, 
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            font-size: 15px;
-            border: 1px solid #DDD;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            background-color: var(--secondary-color);
-        }
+.nav {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
 
-        .form-group input:focus, 
-        .form-group textarea:focus, 
-        .form-group select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-            outline: none;
-        }
+.slams-title {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    color: #FFD700;
+    letter-spacing: 1px;
+}
 
-        .form-group input[type="file"] {
-            padding: 8px;
-            background-color: transparent;
-        }
+.nav a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease-in-out;
+}
 
-        .form-group button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
+.nav .login-btn:hover {
+    background-color: #FFD700;
+    color: #8B0039;
+}
 
-        .form-group button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+.user-profile {
+    position: relative;
+    display: inline-block;
+}
 
-        .back-btn {
-            margin-top: 25px;
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            text-align: center;
-            width: 100%;
-        }
+.user-profile i {
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
 
-        .back-btn:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+.user-profile i:hover {
+    transform: scale(1.1);
+}
 
-        .form-group label i {
-            margin-right: 10px;
-            color: var(--primary-color);
-        }
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #621616;
+    color: #fff;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
+    border-radius: 0;
+    padding: 15px;
+    z-index: 104;
+    border: 1px solid #ffcc00;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
-        .sports-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-            background-color: var(--light-gray);
-            padding: 15px;
-            border-radius: 8px;
-        }
+.user-profile:hover .dropdown-content {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
 
-        .sport-option {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            background-color: var(--secondary-color);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
+.dropdown-content a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
 
-        .sport-option:hover {
-            background-color: #E6F0FA;
-        }
+.dropdown-content a i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
 
-        .sport-option input {
-            margin-right: 10px;
-            accent-color: var(--primary-color);
-            transform: scale(1.2);
-        }
+.dropdown-content a:hover {
+    background-color: #9a1b1b;
+    transform: translateX(5px);
+}
 
-        .sport-option label {
-            margin: 0;
-            color: var(--text-color);
-            font-weight: normal;
-            cursor: pointer;
-        }
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
-            line-height: 1.5;
-            padding: 12px;
-        }
-    </style>
+/* Sidebar Styles */
+.sidebar {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    top: 72px;
+    left: -240px;
+    background-color: #ffffff;
+    z-index: 999;
+    padding-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+.sidebar a {
+    padding: 16px 24px;
+    text-decoration: none;
+    color: rgb(46, 0, 0);
+    font-size: 18px;
+    display: block;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #000000;
+}
+
+.sidebar a i {
+    margin-right: 15px;
+}
+
+.sidebar a:hover {
+    background-color: #a32600;
+    padding-left: 32px;
+    color: white;
+}
+
+.sidebar a.active {
+    background-color: #581000;
+    color: #fff;
+    padding-left: 32px;
+}
+
+.sidebar-btn {
+    font-size: 15px;
+    color: white;
+    background-color: #8B0039;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-btn:hover {
+    transform: scale(1.1);
+    background-color: #8B0039;
+}
+
+/* Team dropdown styles */
+.team-dropdown-btn {
+    padding: 16px 24px;
+    text-decoration: none;
+    color: rgb(46, 0, 0);
+    font-size: 18px;
+    display: block;
+    cursor: pointer;
+    background-color: #ffffff;
+    border-bottom: 1px solid #000000;
+    transition: all 0.3s ease;
+}
+
+.team-dropdown-btn:hover {
+    background-color: #a32600;
+    padding-left: 32px;
+    color: white;
+}
+
+.team-dropdown-content {
+    display: none;
+    background-color: #f4f4f4;
+    padding-left: 20px;
+    border-left: 3px solid #3498db;
+}
+
+.team-dropdown-content a {
+    padding: 8px 15px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #333;
+    display: block;
+    border-bottom: 1px solid #000000;
+}
+
+.team-dropdown-content a:hover {
+    background-color: #a32600;
+    color: white;
+}
+
+.team-dropdown-btn.active+.team-dropdown-content {
+    display: block;
+}
+
+:root {
+    --primary-color: #3f0808;
+    --secondary-color: #FFFFFF;
+    --accent-color: #FFD700;
+    --text-color: #000000;
+    --light-gray: #F5F5F5;
+    --dark-red: #621616;
+    --hover-color: #a32600;
+    --active-color: #581000;
+}
+
+.dashboard-container {
+    margin: 0;
+    padding: 15px;
+    width: 100%;
+    min-height: calc(100vh - 72px);
+}
+
+.create-event-form {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.create-event-form h1 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    text-align: center;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.form-group input, 
+.form-group textarea, 
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #DDD;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: var(--secondary-color);
+}
+
+.form-group input:focus, 
+.form-group textarea:focus, 
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(139, 0, 57, 0.2);
+    outline: none;
+}
+
+.form-group input[type="file"] {
+    padding: 8px;
+    background-color: transparent;
+}
+
+.form-group button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    width: auto;
+    min-width: 120px;
+    transition: all 0.3s ease;
+    margin-top: 0;
+}
+
+.form-group button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    width: 100%;
+    gap: 15px;
+}
+
+.submit-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    width: auto;
+    min-width: 140px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submit-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: auto;
+    min-width: 140px;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group label i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.sports-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    background-color: var(--light-gray);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.sport-option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin: 0;
+    background-color: var(--secondary-color);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    min-height: 40px;
+    height: auto;
+    position: relative;
+    overflow: visible;
+}
+
+.sport-option:hover {
+    background-color: #F9E6E6;
+}
+
+.sport-option input[type="checkbox"] {
+    margin-right: 1px;
+    margin-left: -50px;
+    accent-color: var(--primary-color);
+    transform: scale(1.1);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.sport-option label {
+    margin-top: 10px;
+    margin-left: -50px;
+    color: var(--text-color);
+    font-weight: normal;
+    cursor: pointer;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.3;
+    display: block;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+    padding: 12px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding-top: 100px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    animation: scaleIn 0.3s ease-in-out;
+    position: relative;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); }
+    to { transform: scale(1); }
+}
+
+.modal-content h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    transition: all 0.3s;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.confirm-btn {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.cancel-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.confirm-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.cancel-btn:hover {
+    background-color: #e53935;
+    transform: translateY(-2px);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #999;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+.sport-option input[type="checkbox"] {
+    margin-left: -50px;
+}
+
+    .sports-container {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
+    }
+    
+    .sport-option {
+        padding: 6px;
+        min-height: 36px;
+    }
+    
+    .sport-option label {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 767px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    
+    .create-event-form {
+        padding: 15px;
+    }
+    
+    .sports-container {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 6px;
+        padding: 8px;
+    }
+    
+    .sport-option {
+        padding: 5px;
+        min-height: 32px;
+    }
+    
+    .sport-option input[type="checkbox"] {
+    margin-left: -45px;
+}
+    .sport-option label {
+        font-size: 14px;
+    }
+    
+    .sport-option input {
+        margin-right: 6px;
+        transform: scale(1);
+    }
+    
+    .header .logo img {
+        width: 50px;
+    }
+    
+    .form-buttons {
+        flex-direction: row-reverse; /* This will reverse the order for mobile */
+        justify-content: flex-start; /* Align items to the left */
+        gap: 10px;
+    }
+    
+    .submit-btn, .back-btn {
+        width: auto;
+        min-width: 120px;
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sports-container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .sport-option label {
+        margin-left: -40px;
+        font-size: 13px;
+    }
+    
+    .create-event-form h2 {
+        font-size: 1.5rem;
+    }
+    
+    .header .logo img {
+        width: 40px;
+    }
+    
+    .header {
+        padding: 3px 15px;
+    }
+    
+    .form-buttons {
+        gap: 10px;
+    }
+    
+    .form-group button, .back-btn {
+        padding: 10px 15px;
+        font-size: 10px;
+    }
+}
+</style>
 </head>
 <body>
     <!-- Sidebar Menu -->
@@ -205,10 +722,10 @@
     </header>
 
     <main class="dashboard-container">
-        <h1 style="color: var(--primary-color);">Create Event</h1>
+        
 
         <div class="create-event-form">
-            <h2>Event Details</h2>
+            <h1 style="color: var(--primary-color);">Create Event</h1>
             <form action="/admin/events/create" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="title">
@@ -399,17 +916,17 @@
                     <input type="file" id="appointmentForm" name="appointmentForm" accept=".pdf" required>
                 </div>
 
-                <div class="form-group">
-                    <button type="submit">
-                        <i class="fas fa-plus-circle"></i> Post Event
-                    </button>
-                </div>
+                <div class="form-buttons">
+    <a href="/admin/events" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Events
+    </a>
+    
+    <button type="submit" class="submit-btn">
+        <i class="fas fa-plus-circle"></i> Post Event
+    </button>
+</div>
             </form>
             
-            <a href="/admin/events" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Back to Events
-            </a>
-        </div>
     </main>
 
     <!-- Modal for logout confirmation -->
@@ -424,7 +941,7 @@
         </div>
 
     <script>
-        let isSidebarOpen = false; 
+        let isSidebarOpen = false;
 
         function toggleNav() {
             const sidebar = document.getElementById("mySidebar");
@@ -437,7 +954,7 @@
                 sidebarBtn.innerHTML = "&#9776;"; 
             } else {
                 sidebar.style.left = "0";  
-                content.style.marginLeft = "240px";  
+                content.style.marginLeft = "0";  
                 sidebarBtn.innerHTML = "&#9776;"; 
             }
             isSidebarOpen = !isSidebarOpen;  
@@ -550,6 +1067,15 @@ document.querySelector('form').addEventListener('submit', function(e) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Event...';
 });
+
+const userProfile = document.querySelector('.user-profile');
+        const dropdown = document.querySelector('.dropdown-content');
+        let hideTimeout;
+
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
     </script>
 </body>
 </html>
